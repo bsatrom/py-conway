@@ -1,49 +1,134 @@
 import unittest
-import numpy as np
 from game import Game
+from pprint import pprint
+
+
+def create_zeros(x, y):
+    dim_one = [0 for item in range(x)]
+    return [dim_one[:] for item in range(y)]
 
 
 class TestConway(unittest.TestCase):
     # Create a Game class that takes a numpy array for the seed
     def test_game_init(self):
-        game = Game(12, 12)
-        self.assertEqual(game.board_size, (12, 12))
+        test_game = Game(12, 12)
+        self.assertEqual(test_game.board_size, (12, 12))
 
     # Add a beacon with a single cell active
-    def test_game_init_beacon(self):
-        beacon = np.zeros((6, 6))
-        beacon[1, 1] = 1
-        game = Game(6, 6, beacon)
-        self.assertTrue(np.array_equal(game.beacon, beacon))
+    def test_test_game_init_beacon(self):
+        beacon = create_zeros(6, 6)
+        beacon[1][1] = 1
+        test_game = Game(6, 6, beacon)
+        self.assertTrue(test_game.beacon == beacon)
 
     # Test for defaults
-    def test_game_init_defaults(self):
-        game = Game()
-        self.assertEqual(game.board_size, (6, 6))
-        self.assertTrue(np.array_equal(game.beacon, np.zeros((6, 6))))
+    def test_test_game_init_defaults(self):
+        test_game = Game()
+        self.assertEqual(test_game.board_size, (6, 6))
+        self.assertTrue(test_game.beacon == create_zeros(6, 6))
 
     # Test for default board_size on set beacon
-    def test_game_init_board_default_beacon(self):
-        game = Game(12, 12)
-        self.assertTrue(np.array_equal(game.beacon, np.zeros((12, 12))))
+    def test_test_game_init_board_default_beacon(self):
+        test_game = Game(12, 12)
+        self.assertTrue(test_game.beacon == create_zeros(12, 12))
 
     # Test that check cell returns a valid value
-    def test_game_check_cell_with_one_neighbor(self):
-        beacon = [[0, 1, 0], [0, 1, 0], [0, 0, 0]]
-        game = Game(3, 3, beacon)
-        self.assertEqual(game._numNeighbors(1, 1), 1)
+    def test_test_game_3_x_3_check_cell_with_one_neighbor(self):
+        beacon = [[0, 1, 0],
+                  [0, 1, 0],
+                  [0, 0, 0]]
+        test_game = Game(3, 3, beacon)
+        self.assertEqual(test_game._num_neighbors(1, 1), 1)
 
-    def test_game_check_cell_with_two_neighbors(self):
-        beacon = [[0, 1, 0], [0, 1, 0], [0, 0, 0]]
-        game = Game(3, 3, beacon)
-        self.assertEqual(game._numNeighbors(1, 2), 2)
+    def test_test_game_3_x_3_check_cell_with_two_neighbors(self):
+        beacon = [[0, 1, 0],
+                  [0, 1, 0],
+                  [0, 0, 0]]
+        test_game = Game(3, 3, beacon)
+        self.assertEqual(test_game._num_neighbors(1, 2), 2)
 
-    #def test_single_column_array(self):
-    #    beacon = [[0], [0], [1]]
-    #    game = Game(1, 1, beacon)
-    #    self.assertEqual(game._numNeighbors(0, 2), 0)
+    def test_test_game_3_x_3_check_cell_with_three_neighbors(self):
+        beacon = [[1, 0, 0],
+                  [1, 1, 0],
+                  [0, 0, 0]]
+        test_game = Game(3, 3, beacon)
+        self.assertEqual(test_game._num_neighbors(0, 1), 3)
 
-    # Run the game for one iteration on a single cell
+    # Run on an array of a single column
+    def test_single_column_array(self):
+        beacon = [[0], [0], [1]]
+        test_game = Game(1, 3, beacon)
+        self.assertEqual(test_game._num_neighbors(1, 0), 1)
+
+    # Run the test_game for one iteration on a single cell
+    def test_3_x_3_single_cell_single_run(self):
+        beacon = [[0, 0, 0],
+                  [0, 1, 0],
+                  [0, 0, 0]]
+        test_game = Game(3, 3, beacon)
+        test_game.step()
+        self.assertTrue(test_game.state == create_zeros(3, 3))
+
+    # Run the test_game for one iteration on three cells
+    def test_3_x_3_three_neighbors_single_run(self):
+        beacon = [[1, 0, 0],
+                  [1, 1, 0],
+                  [0, 0, 0]]
+
+        expected_state = [[1, 1, 0],
+                          [1, 1, 0],
+                          [0, 0, 0]]
+
+        test_game = Game(3, 3, beacon)
+        test_game.step()
+
+        self.assertTrue(test_game.state == expected_state)
+
+    # Run the test_game for one iteration on four cells
+    def test_3_x_3_four_neighbors_single_run(self):
+        beacon = [[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]]
+
+        expected_state = [[1, 1, 1],
+                          [1, 0, 1],
+                          [1, 1, 1]]
+
+        test_game = Game(3, 3, beacon)
+        test_game.step()
+
+        self.assertTrue(test_game.state == expected_state)
+
+    # Run the test_game for one iteration on four cells
+    def test_4_x_3_three_neighbors_single_run(self):
+        beacon = [[1, 0, 1, 0],
+                  [0, 1, 0, 0],
+                  [1, 0, 1, 1]]
+
+        expected_state = [[0, 1, 0, 0],
+                          [1, 0, 0, 1],
+                          [0, 1, 1, 0]]
+
+        test_game = Game(4, 3, beacon)
+        test_game.step()
+
+        self.assertTrue(test_game.state == expected_state)
+
+    # Test the number of live cells on an empty beacon
+    def test_3_x_3_empty_beacon_no_live_cells(self):
+        test_game = Game(3, 3)
+
+        self.assertEqual(test_game.live_cells, 0)
+
+    # Test the live cells count on a beacon with 4 lve cells
+    def test_3_x_3_beacon_five_live_cells(self):
+        beacon = [[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]]
+
+        test_game = Game(3, 3, beacon)
+
+        self.assertEqual(test_game.live_cells, 5)
 
 
 if __name__ == '__main__':
