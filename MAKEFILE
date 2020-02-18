@@ -1,0 +1,2 @@
+test:
+	pycodestyle --show-source --show-pep8 tests/ example/ conway/
