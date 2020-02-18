@@ -12,13 +12,14 @@ class Game:
         starter beacon.
 
         Keyword Arguments:
-        width --
-        height --
+        width -- the width (in columns) of the game board
+        height -- the height (in rows) of the game board
         beacon -- A two-dimensional list with 1 and 0 values that
                   should be set to the initial game state.
         """
         self.board_size = (width, height)
         self.live_cells = 0
+        self.num_steps = 0
         if beacon is None:
             self.beacon = self._create_zeros()
         else:
@@ -95,14 +96,18 @@ class Game:
         """
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells in-step
-        intermediateState = deepcopy(self.state)
+        intermediate_state = deepcopy(self.state)
+        upcoming_live_cells = 0
         for row_index, row in enumerate(self.state):
             for col_index in range(len(row)):
                 neighbors = self._num_neighbors(row_index, col_index)
 
                 if (neighbors < 2 or neighbors > 3):
-                    intermediateState[row_index][col_index] = 0
+                    intermediate_state[row_index][col_index] = 0
                 elif (neighbors == 3):
-                    intermediateState[row_index][col_index] = 1
+                    intermediate_state[row_index][col_index] = 1
+                    upcoming_live_cells += 1
 
-        self.state = deepcopy(intermediateState)
+        self.state = deepcopy(intermediate_state)
+        self.num_steps += 1
+        self.live_cells = upcoming_live_cells

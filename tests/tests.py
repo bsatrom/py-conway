@@ -136,6 +136,40 @@ class TestConway(unittest.TestCase):
 
         self.assertEqual(test_game.live_cells, 5)
 
+    def test_increment_live_cells_after_update(self):
+        beacon = [[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]]
+
+        test_game = Game(3, 3, beacon)
+        test_game.step()
+
+        self.assertEqual(test_game.live_cells, 8)
+
+    def test_update_steps_after_each_step(self):
+        test_game = Game(2, 2, [[1, 0], [0, 1]])
+
+        test_game.step()
+        test_game.step()
+
+        self.assertEqual(test_game.num_steps, 2)
+
+    # Run the test_game for one iteration on four cells
+    def test_3_x_3_four_neighbors_two_runs(self):
+        beacon = [[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]]
+
+        expected_state = [[1, 0, 1],
+                          [0, 0, 0],
+                          [1, 0, 1]]
+
+        test_game = Game(3, 3, beacon)
+        test_game.step()
+        test_game.step()
+
+        self.assertTrue(test_game.state == expected_state)
+
 
 if __name__ == '__main__':
     unittest.main()
