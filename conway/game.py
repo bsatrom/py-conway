@@ -2,7 +2,21 @@ from copy import deepcopy
 
 
 class Game:
-    def __init__(self, width=6, height=6, beacon=None):
+    """
+    Class for running a game of Conway's Game of Life on a virtual
+    two-dimensional board of any size.
+    """
+    def __init__(self, width: int = 6, height: int = 6, beacon: list = None):
+        """
+        Intialize the game based on provided board size values and a
+        starter beacon.
+
+        Keyword Arguments:
+        width --
+        height --
+        beacon -- A two-dimensional list with 1 and 0 values that
+                  should be set to the initial game state.
+        """
         self.board_size = (width, height)
         self.live_cells = 0
         if beacon is None:
@@ -13,29 +27,42 @@ class Game:
 
         self.state = deepcopy(self.beacon)
 
-    def _count_live_cells(self, grid_state):
+    def _count_live_cells(self, grid_state: list) -> int:
         """
-        Count the number of live cells in the game
+        Count the number of live cells in a provided X by Y grid.
+
+        Positional arguments:
+        grid_state -- An X by Y two-dimensional list with 1 and 0 values.
         """
         return len([col_val
                     for row in grid_state
                     for col_val in row if col_val == 1])
 
-    def _create_zeros(self):
+    def _create_zeros(self) -> list:
         """
-        Initialize the board with all cells off
+        Initialize the board with all cells "dead" or off. Based on the
+        provided board_size, returns a two-dimensional list of zeros.
         """
         cols, rows = self.board_size
         dim_one = [0 for row in range(rows)]
         return [dim_one[:] for col in range(cols)]
 
-    def _num_neighbors(self, row, column):
+    def _num_neighbors(self, row: int, column: int) -> int:
+        """
+        Determine the number of neighbors to a given cell that
+        are "alive" or on. each cell has between three and eight
+        potential neighbors.
+
+        Positional arguments:
+        row -- The row of the current cell
+        col -- The column of the current cell
+        """
         neighbors = 0
         num_cols, num_rows = self.board_size
 
-        # each cell has between three and eight potential neighbors, so we'll
-        # build up a set of coordinates to check and then iterate over that set
-        # to get a count.
+        # Build up a set of possible coordinates to check
+        # and then iterate over that set to get a count,
+        # ignoring those values that exist outside of the grid
         neighbor_set = {(row - 1, column - 1),
                         (row - 1, column),
                         (row - 1, column + 1),
@@ -60,8 +87,14 @@ class Game:
         return neighbors
 
     def step(self):
-        # Enumerate over every element and determine its number of neighbors
-        # For each cell, check all eight neighbors and turn on or off
+        """
+        Enumerate over every element and determine its number of neighbors
+        For each cell, check all eight neighbors and turn on or off.
+        Once every cell has been checked against Conway's three rules,
+        the entire state grid is updated at once.
+        """
+        # Get a deep copy of the state to track cells that will need
+        # to change without affecting the outcome for other cells in-step
         intermediateState = deepcopy(self.state)
         for row_index, row in enumerate(self.state):
             for col_index in range(len(row)):
