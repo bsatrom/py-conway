@@ -1,4 +1,12 @@
 from copy import deepcopy
+from enum import Enum
+from threading import Thread
+
+
+class GameState(Enum):
+    READY = 1
+    RUNNING = 2
+    FINISHED = 3
 
 
 class Game:
@@ -23,10 +31,15 @@ class Game:
         if beacon is None:
             self.beacon = self._create_zeros()
         else:
+            if len(beacon) != height or len(beacon[0]) != width:
+                raise Exception("Please make sure that the beacon matches \
+                                 the provided width and height values.")
+
             self.beacon = beacon
             self.live_cells = self._count_live_cells(self.beacon)
 
-        self.state = deepcopy(self.beacon)
+        self.board = deepcopy(self.beacon)
+        self.state = GameState.READY
 
     def _count_live_cells(self, grid_state: list) -> int:
         """
@@ -82,10 +95,24 @@ class Game:
             elif n_row == num_rows or n_col == num_cols:
                 continue
             else:
-                if self.state[n_row][n_col] == 1:
+                if self.board[n_row][n_col] == 1:
                     neighbors += 1
 
         return neighbors
+
+    def _run(self):
+        if (self.state == GameState.READY):
+            self.state = GameState.RUNNING
+            while True:
+                if (self.live_cells == 0):
+                    self.state = GameState.FINISHED
+                    break
+                self.step()
+
+    def start(self):
+        thread = Thread(target=self._run, args=())
+        thread.daemon = True
+        thread.start()
 
     def step(self):
         """
@@ -96,9 +123,9 @@ class Game:
         """
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells in-step
-        intermediate_state = deepcopy(self.state)
+        intermediate_state = deepcopy(self.board)
         upcoming_live_cells = 0
-        for row_index, row in enumerate(self.state):
+        for row_index, row in enumerate(self.board):
             for col_index in range(len(row)):
                 neighbors = self._num_neighbors(row_index, col_index)
 
@@ -108,6 +135,6 @@ class Game:
                     intermediate_state[row_index][col_index] = 1
                     upcoming_live_cells += 1
 
-        self.state = deepcopy(intermediate_state)
+        self.board = deepcopy(intermediate_state)
         self.num_steps += 1
         self.live_cells = upcoming_live_cells

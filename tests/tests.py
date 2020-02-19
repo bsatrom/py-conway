@@ -1,12 +1,13 @@
 import unittest
 from pprint import pprint
+from time import sleep
 
 import os
 import sys
 sys.path.insert(0, os.path.abspath(
                    os.path.join(os.path.dirname(__file__), '..')))
 
-from conway.game import Game  # nopep8
+from conway.game import Game, GameState  # nopep8
 
 
 def create_zeros(x, y):
@@ -25,18 +26,18 @@ class TestConway(unittest.TestCase):
         beacon = create_zeros(6, 6)
         beacon[1][1] = 1
         test_game = Game(6, 6, beacon)
-        self.assertTrue(test_game.beacon == beacon)
+        self.assertEqual(test_game.beacon, beacon)
 
     # Test for defaults
     def test_test_game_init_defaults(self):
         test_game = Game()
         self.assertEqual(test_game.board_size, (6, 6))
-        self.assertTrue(test_game.beacon == create_zeros(6, 6))
+        self.assertEqual(test_game.beacon, create_zeros(6, 6))
 
     # Test for default board_size on set beacon
     def test_test_game_init_board_default_beacon(self):
         test_game = Game(12, 12)
-        self.assertTrue(test_game.beacon == create_zeros(12, 12))
+        self.assertEqual(test_game.beacon, create_zeros(12, 12))
 
     # Test that check cell returns a valid value
     def test_test_game_3_x_3_check_cell_with_one_neighbor(self):
@@ -73,7 +74,7 @@ class TestConway(unittest.TestCase):
                   [0, 0, 0]]
         test_game = Game(3, 3, beacon)
         test_game.step()
-        self.assertTrue(test_game.state == create_zeros(3, 3))
+        self.assertEqual(test_game.board, create_zeros(3, 3))
 
     # Run the test_game for one iteration on three cells
     def test_3_x_3_three_neighbors_single_run(self):
@@ -88,7 +89,7 @@ class TestConway(unittest.TestCase):
         test_game = Game(3, 3, beacon)
         test_game.step()
 
-        self.assertTrue(test_game.state == expected_state)
+        self.assertEqual(test_game.board, expected_state)
 
     # Run the test_game for one iteration on four cells
     def test_3_x_3_four_neighbors_single_run(self):
@@ -103,7 +104,7 @@ class TestConway(unittest.TestCase):
         test_game = Game(3, 3, beacon)
         test_game.step()
 
-        self.assertTrue(test_game.state == expected_state)
+        self.assertEqual(test_game.board, expected_state)
 
     # Run the test_game for one iteration on four cells
     def test_4_x_3_three_neighbors_single_run(self):
@@ -118,7 +119,7 @@ class TestConway(unittest.TestCase):
         test_game = Game(4, 3, beacon)
         test_game.step()
 
-        self.assertTrue(test_game.state == expected_state)
+        self.assertEqual(test_game.board, expected_state)
 
     # Test the number of live cells on an empty beacon
     def test_3_x_3_empty_beacon_no_live_cells(self):
@@ -168,7 +169,52 @@ class TestConway(unittest.TestCase):
         test_game.step()
         test_game.step()
 
-        self.assertTrue(test_game.state == expected_state)
+        self.assertTrue(test_game.board == expected_state)
+
+    def test_default_game_state_ready(self):
+        test_game = Game()
+
+        self.assertEqual(test_game.state, GameState.READY)
+
+    def test_start_game_changes_state_to_running(self):
+        beacon = [[0, 1, 0],
+                  [1, 1, 1],
+                  [0, 1, 0]]
+
+        test_game = Game(3, 3, beacon)
+        test_game.state = GameState.READY
+        test_game._run()
+
+        self.assertEqual(test_game.state, GameState.FINISHED)
+        self.assertEqual(test_game.live_cells, 0)
+
+    def test_empty_board_run_game_until_no_living_cells_left(self):
+        test_game = Game()
+        test_game.state = GameState.READY
+        test_game._run()
+
+        self.assertEqual(test_game.state, GameState.FINISHED)
+
+    def test_ensure_that_width_height_and_beacon_match(self):
+        beacon = [[0, 0, 0, 0],
+                  [0, 1, 1, 0],
+                  [0, 1, 1, 0],
+                  [0, 0, 0, 0]]
+
+        with self.assertRaises(Exception):
+            Game(3, 4, beacon)
+
+    # def test_still_life_game_will_continue_to_run(self):
+    #     beacon = [[0, 0, 0, 0],
+    #               [0, 1, 1, 0],
+    #               [0, 1, 1, 0],
+    #               [0, 0, 0, 0]]
+
+    #     test_game = Game(4, 4, beacon)
+    #     test_game.start()
+
+    #     self.assertEqual(test_game.state, GameState.RUNNING)
+    #     self.assertTrue(test_game.live_cells > 0)
 
 
 if __name__ == '__main__':
