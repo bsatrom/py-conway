@@ -2,13 +2,23 @@
 
 # py-conway
 
-TDD-style implementation of Conway's Game of Life in Python. Built with zero dependencies in order to be portable to Web, CLI and embedded applications.
+TDD-style implementation of [Conway's Game of Life](https://www.conwaylife.com/wiki/Conway%27s_Game_of_Life) in Python. Built with zero dependencies in order to be portable to Web, CLI and embedded applications.
+
+[View Project on PyPi](https://pypi.org/project/py-conway/0.0.1/)
+
+## Installation
+
+```bash
+pip install py-conway
+```
 
 ## Usage
 
 To create a game, you'll need to provide dimensions and a starting two-dimensonal list to function as the game board. For example:
 
 ```python
+from conway.game import Game
+
 beacon = [[0, 1, 0],
           [1, 1, 1],
           [0, 1, 0]]
