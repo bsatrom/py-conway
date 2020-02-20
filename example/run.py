@@ -25,3 +25,10 @@ pprint(beacon)
 
 plt.imshow(game.beacon, cmap='binary')
 plt.show()
+
+game.step()
+
+pprint(beacon)
+
+plt.imshow(game.beacon, cmap='binary')
+plt.show()

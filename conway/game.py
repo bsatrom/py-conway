@@ -101,6 +101,7 @@ class Game:
         return neighbors
 
     def _run(self):
+        """Target method for running a game on a thread."""
         if (self.state == GameState.READY):
             self.state = GameState.RUNNING
             while True:
@@ -110,6 +111,7 @@ class Game:
                 self.step()
 
     def start(self):
+        """Run the game automatically on a background thread."""
         thread = Thread(target=self._run, args=())
         thread.daemon = True
         thread.start()
