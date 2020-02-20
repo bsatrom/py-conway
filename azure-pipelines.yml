@@ -39,5 +39,5 @@ steps:
   displayName: 'pep8'
 
 - script: |
-    python /Users/bsatrom/Development/py-conway/tests/tests.py
+    python tests/tests.py
   displayName: 'unittest'
