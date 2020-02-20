@@ -127,7 +127,7 @@ class Game:
         # to change without affecting the outcome for other cells in-step
         intermediate_state = deepcopy(self.board)
         upcoming_live_cells = self._count_live_cells(self.board)
-        
+
         for row_index, row in enumerate(self.board):
             for col_index in range(len(row)):
                 neighbors = self._num_neighbors(row_index, col_index)

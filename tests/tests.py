@@ -223,11 +223,8 @@ class TestConway(unittest.TestCase):
         test_game.board[0][1] = 1
         test_game.board[0][2] = 1
 
-        print(test_game.board)
-
         test_game.step()
 
-        print(test_game.board)
         self.assertEqual(test_game.live_cells, 2)
 
     # def test_still_life_game_will_continue_to_run(self):
