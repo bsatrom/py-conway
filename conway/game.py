@@ -126,16 +126,20 @@ class Game:
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells in-step
         intermediate_state = deepcopy(self.board)
-        upcoming_live_cells = 0
+        upcoming_live_cells = self._count_live_cells(self.board)
+
         for row_index, row in enumerate(self.board):
             for col_index in range(len(row)):
                 neighbors = self._num_neighbors(row_index, col_index)
 
                 if (neighbors < 2 or neighbors > 3):
+                    if (self.board[row_index][col_index] == 1):
+                        upcoming_live_cells -= 1
                     intermediate_state[row_index][col_index] = 0
                 elif (neighbors == 3):
+                    if (self.board[row_index][col_index] == 0):
+                        upcoming_live_cells += 1
                     intermediate_state[row_index][col_index] = 1
-                    upcoming_live_cells += 1
 
         self.board = deepcopy(intermediate_state)
         self.num_steps += 1

@@ -204,6 +204,29 @@ class TestConway(unittest.TestCase):
         with self.assertRaises(Exception):
             Game(3, 4, beacon)
 
+    def test_ensure_that_live_cells_count_is_accurate_before_run(self):
+        beacon = [[0, 0, 0, 0],
+                  [0, 1, 1, 0],
+                  [0, 1, 1, 0],
+                  [0, 0, 0, 0]]
+
+        test_game = Game(4, 4, beacon)
+        test_game.board[0][0] = 1
+
+        test_game.step()
+
+        self.assertEqual(test_game.live_cells, 5)
+
+    def test_no_beacon_ensure_live_cells_count_is_accurate_before_run(self):
+        test_game = Game(4, 4)
+        test_game.board[0][0] = 1
+        test_game.board[0][1] = 1
+        test_game.board[0][2] = 1
+
+        test_game.step()
+
+        self.assertEqual(test_game.live_cells, 2)
+
     # def test_still_life_game_will_continue_to_run(self):
     #     beacon = [[0, 0, 0, 0],
     #               [0, 1, 1, 0],
