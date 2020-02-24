@@ -51,6 +51,7 @@ jobs:
 
       #Build Module Resources
 - job: Build
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -76,7 +77,6 @@ jobs:
       action: 'create'
       target: '$(Build.SourceVersion)'
       tagSource: 'gitTag'
-      title: 'v*'
       changeLogCompareToRelease: 'lastFullRelease'
       changeLogType: 'commitBased'
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
