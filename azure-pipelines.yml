@@ -3,74 +3,78 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
-pool:
-  vmImage: 'ubuntu-latest'
-strategy:
-  matrix:
-    Python35:
-      python.version: '3.5'
-    Python36:
-      python.version: '3.6'
-    Python37:
-      python.version: '3.7'
+jobs:
+- job: Test
+  pool:
+    vmImage: 'ubuntu-latest'
+  strategy:
+    matrix:
+      Python35:
+        python.version: '3.5'
+      Python36:
+        python.version: '3.6'
+      Python37:
+        python.version: '3.7'
 
-steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+  steps:
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '$(python.version)'
+    displayName: 'Use Python $(python.version)'
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
+  - script: |
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: 'Install dependencies'
 
-- script: |
-    pip install pycodestyle
-    pycodestyle --show-source --show-pep8 tests/ example/ conway/
-  displayName: 'pep8'
+  - script: |
+      pip install pycodestyle
+      pycodestyle --show-source --show-pep8 tests/ example/ conway/
+    displayName: 'pep8'
 
-- script: |
-    pip install pytest pytest-cov pytest-azurepipelines
-    pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
-  displayName: 'pytest'
+  - script: |
+      pip install pytest pytest-cov pytest-azurepipelines
+      pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+    displayName: 'pytest'
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testResultsFiles: '**/test-*.xml'
-    testRunTitle: 'Publish test results for Python $(python.version)'
+  - task: PublishTestResults@2
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFiles: '**/test-*.xml'
+      testRunTitle: 'Publish test results for Python $(python.version)'
 
-- task: PublishCodeCoverageResults@1
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-    reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
+  - task: PublishCodeCoverageResults@1
+    inputs:
+      codeCoverageTool: Cobertura
+      summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
+      reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
 
-#Build Module Resources
-- script: |
-    python3 -m pip install --user --upgrade setuptools wheel
-    python3 setup.py sdist bdist_wheel
+      #Build Module Resources
+- job: Build
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  displayName: 'Build Module distribution files'
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - script: |
+      python3 -m pip install --user --upgrade setuptools wheel
+      python3 setup.py sdist bdist_wheel
+    displayName: 'Build Module distribution files'
 
-- task: CopyFiles@2
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-  inputs:
-    sourceFolder: '$(Build.SourcesDirectory)/dist'
-    contents: '*'
-    targetFolder: '$(Build.ArtifactStagingDirectory)/dist'
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(Build.SourcesDirectory)/dist'
+      contents: '*'
+      targetFolder: '$(Build.ArtifactStagingDirectory)/dist'
 
-# GitHub Release
-- task: GitHubRelease@1
-  displayName: 'Create GitHub Release'      
-  inputs:
-    gitHubConnection: 'bsatrom-conway'
-    repositoryName: 'bsatrom/py-conway'
-    action: 'create'
-    target: '$(Build.SourceVersion)'
-    tagSource: 'gitTag'
-    title: 'v*'
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
-    assets: '$(Build.ArtifactStagingDirectory)/dist'
+  # GitHub Release
+  - task: GitHubRelease@1
+    displayName: 'Create GitHub Release'      
+    inputs:
+      gitHubConnection: 'bsatrom-conway'
+      repositoryName: 'bsatrom/py-conway'
+      action: 'create'
+      target: '$(Build.SourceVersion)'
+      tagSource: 'gitTag'
+      changeLogCompareToRelease: 'lastFullRelease'
+      changeLogType: 'commitBased'
+      assets: '$(Build.ArtifactStagingDirectory)/dist/*'
