@@ -69,7 +69,7 @@ steps:
     action: 'create'
     target: '$(Build.SourceVersion)'
     tagSource: 'gitTag'
-    title: 'release-v*'
+    title: 'v*'
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
     assets: $(Build.ArtifactStagingDirectory)/py_conway-*.*
