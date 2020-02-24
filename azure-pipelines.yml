@@ -78,3 +78,12 @@ jobs:
       changeLogCompareToRelease: 'lastFullRelease'
       changeLogType: 'commitBased'
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
+
+  - task: TwineAuthenticate@0
+    condition: succeeded()
+    inputs:
+      pythonUploadServiceConnection: 'pypi-conway'
+
+  - script: |
+      twine upload -r "pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
+    condition: succeeded()
