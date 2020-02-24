@@ -37,6 +37,6 @@ steps:
   displayName: 'pep8'
 
 - script: |
-    pip install pytest pytest-azurepipelines
-    pytest --cov=conway tests/*
+    pip install pytest pytest-cov pytest-azurepipelines
+    pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
   displayName: 'pytest'
