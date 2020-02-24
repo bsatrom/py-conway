@@ -49,6 +49,7 @@ steps:
 
 #Build Module Resources
 - script: |
+    python3 -m pip install --user --upgrade setuptools wheel
     python3 setup.py sdist bdist_wheel
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   displayName: 'Build Module distribution files'
