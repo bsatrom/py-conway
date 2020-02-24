@@ -28,6 +28,8 @@ class Game:
         self.board_size = (width, height)
         self.live_cells = 0
         self.num_steps = 0
+        self._thread_active = False
+
         if beacon is None:
             self.beacon = self._create_zeros()
         else:
@@ -105,7 +107,7 @@ class Game:
         if (self.state == GameState.READY):
             self.state = GameState.RUNNING
             while True:
-                if (self.live_cells == 0):
+                if (self.live_cells == 0 or not self._thread_active):
                     self.state = GameState.FINISHED
                     break
                 self.step()
@@ -115,6 +117,10 @@ class Game:
         thread = Thread(target=self._run, args=())
         thread.daemon = True
         thread.start()
+        self._thread_active = True
+
+    def stop(self):
+        self._thread_active = False
 
     def step(self):
         """

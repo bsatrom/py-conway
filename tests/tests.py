@@ -181,6 +181,7 @@ class TestConway():
 
         test_game = Game(3, 3, beacon)
         test_game.state = GameState.READY
+        test_game._thread_active = True
         test_game._run()
 
         assert(test_game.state == GameState.FINISHED)
@@ -225,14 +226,28 @@ class TestConway():
 
         assert(test_game.live_cells == 2)
 
-    # def test_still_life_game_will_continue_to_run(self):
-    #     beacon = [[0, 0, 0, 0],
-    #               [0, 1, 1, 0],
-    #               [0, 1, 1, 0],
-    #               [0, 0, 0, 0]]
+    def test_still_life_game_will_continue_to_run(self):
+        beacon = [[0, 0, 0, 0],
+                  [0, 1, 1, 0],
+                  [0, 1, 1, 0],
+                  [0, 0, 0, 0]]
 
-    #     test_game = Game(4, 4, beacon)
-    #     test_game.start()
+        test_game = Game(4, 4, beacon)
+        test_game.start()
 
-    #     assert(test_game.state, GameState.RUNNING)
-    #     assert(test_game.live_cells == 0)
+        assert(test_game.state, GameState.RUNNING)
+
+    def test_still_life_game_can_be_stopped(self):
+        beacon = [[0, 0, 0, 0],
+                  [0, 1, 1, 0],
+                  [0, 1, 1, 0],
+                  [0, 0, 0, 0]]
+
+        test_game = Game(4, 4, beacon)
+        test_game.start()
+
+        assert(test_game.state, GameState.RUNNING)
+
+        test_game.stop()
+
+        assert(test_game.state, GameState.FINISHED)
