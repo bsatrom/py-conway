@@ -31,16 +31,12 @@ steps:
     pip install -r requirements.txt
   displayName: 'Install dependencies'
 
-#- script: |
-#    pip install pytest pytest-azurepipelines
-#    pytest
-#  displayName: 'pytest'
-
 - script: |
     pip install pycodestyle
     pycodestyle --show-source --show-pep8 tests/ example/ conway/
   displayName: 'pep8'
 
 - script: |
-    python tests/tests.py
-  displayName: 'unittest'
+    pip install pytest pytest-azurepipelines
+    pytest --cov=conway tests/*
+  displayName: 'pytest'

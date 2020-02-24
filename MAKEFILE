@@ -1,3 +1,9 @@
 test:
 	pycodestyle --show-source --show-pep8 tests/ example/ conway/
-	python3 tests/tests.py 
+	pytest --cov=conway tests/*
+
+run_build:
+	python3 setup.py sdist bdist_wheel
+
+deploy:
+	twine upload dist/*
