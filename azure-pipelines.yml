@@ -57,9 +57,9 @@ steps:
 - task: CopyFiles@2
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
-    sourceFolder: '$(Build.SourcesDirectory)'
+    sourceFolder: '$(Build.SourcesDirectory)/dist'
     contents: '*'
-    targetFolder: '$(Build.ArtifactStagingDirectory)'
+    targetFolder: '$(Build.ArtifactStagingDirectory)/dist'
 
 # GitHub Release
 - task: GitHubRelease@1
@@ -73,4 +73,4 @@ steps:
     title: 'v*'
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
-    assets: $(Build.ArtifactStagingDirectory)/py_conway-*.*
+    assets: '$(Build.ArtifactStagingDirectory)/dist'
