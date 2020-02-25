@@ -280,3 +280,8 @@ class TestConway():
 
         with pytest.raises(InitError):
             Game(4, 4, seed)
+
+    def test_generate_random_seed_generates_random_seed(self):
+        test_game = Game(12, 12, random=True)
+
+        assert test_game.live_cells > 0

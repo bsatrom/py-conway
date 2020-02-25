@@ -28,6 +28,12 @@ seed = [[0, 1, 0],
 new_game = Game(3, 3, seed)
 ```
 
+If no seed is provided, the game can either generate a seed of zeroes, or a random starter seed. use the `random=True` positional argument to generate a random seed.
+
+```python
+new_game = Game(12, 12, random=True)
+```
+
 Once the game board is populated, call the `start()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
 
 ```python
