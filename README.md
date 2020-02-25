@@ -6,7 +6,7 @@
 
 TDD-style implementation of [Conway's Game of Life](https://www.conwaylife.com/wiki/Conway%27s_Game_of_Life) in Python. Built with zero dependencies in order to be portable to Web, CLI and embedded applications.
 
-[View Project on PyPi](https://pypi.org/project/py-conway/0.0.1/)
+[View Project on PyPi](https://pypi.org/project/py-conway/)
 
 ## Installation
 
