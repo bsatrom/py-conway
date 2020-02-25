@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-conway",
-    version="0.1.0",
+    version="0.1.1",
     author="Brandon Satrom",
     author_email="bsatrom@gmail.com",
     description="TDD-style implementation of Conway's Game of Life in Python",
@@ -14,9 +14,15 @@ setuptools.setup(
     url="https://github.com/bsatrom/py-conway",
     packages=setuptools.find_packages(),
     classifiers=[
-        "Programming Language :: Python :: 3",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
+        "Intended Audience :: Developers",
+        "Natural Language :: English",
     ],
     python_requires='>=3.5',
 )
