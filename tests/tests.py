@@ -255,3 +255,28 @@ class TestConway():
         test_game.stop()
 
         assert test_game.state, GameState.FINISHED
+
+    def test_ensure_that_seed_includes_valid_data(self):
+        seed = [['a', 0, 0, 0],
+                [0, 2, 1, 0],
+                [0, 1, 1, 0],
+                [0, 0, 0, -1]]
+
+        with pytest.raises(InitError):
+            Game(4, 4, seed)
+
+        seed = [[0, 0, 0, 0],
+                [0, 2, 1, 0],
+                [0, 1, 1, 0],
+                [0, 0, 0, -1]]
+
+        with pytest.raises(InitError):
+            Game(4, 4, seed)
+
+        seed = [[0, 0, 0, 0],
+                [0, 0, 1, 0],
+                [0, 1, 1, 0],
+                [0, 0, 0, -1]]
+
+        with pytest.raises(InitError):
+            Game(4, 4, seed)
