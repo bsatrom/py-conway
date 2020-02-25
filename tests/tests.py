@@ -75,7 +75,7 @@ class TestConway():
                 [0, 0, 0]]
 
         test_game = Game(3, 3, seed)
-        test_game.step()
+        test_game.run_generation()
         assert test_game.current_board == create_zeros(3, 3)
 
     # Run the test_game for one iteration on three cells
@@ -89,7 +89,7 @@ class TestConway():
                           [0, 0, 0]]
 
         test_game = Game(3, 3, seed)
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.current_board == expected_state
 
@@ -104,7 +104,7 @@ class TestConway():
                           [1, 1, 1]]
 
         test_game = Game(3, 3, seed)
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.current_board == expected_state
 
@@ -119,7 +119,7 @@ class TestConway():
                           [0, 1, 1, 0]]
 
         test_game = Game(4, 3, seed)
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.current_board == expected_state
 
@@ -145,15 +145,15 @@ class TestConway():
                 [0, 1, 0]]
 
         test_game = Game(3, 3, seed)
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.live_cells == 8
 
-    def test_update_steps_after_each_step(self):
+    def test_update_generations_count_after_each_generation(self):
         test_game = Game(2, 2, [[1, 0], [0, 1]])
 
-        test_game.step()
-        test_game.step()
+        test_game.run_generation()
+        test_game.run_generation()
 
         assert test_game.generations == 2
 
@@ -168,8 +168,8 @@ class TestConway():
                           [1, 0, 1]]
 
         test_game = Game(3, 3, seed)
-        test_game.step()
-        test_game.step()
+        test_game.run_generation()
+        test_game.run_generation()
 
         assert test_game.current_board == expected_state
 
@@ -216,7 +216,7 @@ class TestConway():
         test_game = Game(4, 4, seed)
         test_game.current_board[0][0] = 1
 
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.live_cells == 5
 
@@ -226,7 +226,7 @@ class TestConway():
         test_game.current_board[0][1] = 1
         test_game.current_board[0][2] = 1
 
-        test_game.step()
+        test_game.run_generation()
 
         assert test_game.live_cells == 2
 

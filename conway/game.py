@@ -109,7 +109,7 @@ class Game:
                 if (self.live_cells == 0 or not self._thread_active):
                     self.state = GameState.FINISHED
                     break
-                self.step()
+                self.run_generation()
 
     def start(self):
         """Run the game automatically on a background thread."""
@@ -122,7 +122,7 @@ class Game:
         """Stop a game currently running on a background thread."""
         self._thread_active = False
 
-    def step(self):
+    def run_generation(self):
         """
         Enumerate over every element and determine its number of neighbors
         For each cell, check all eight neighbors and turn on or off.
@@ -130,7 +130,8 @@ class Game:
         the entire state grid is updated at once.
         """
         # Get a deep copy of the state to track cells that will need
-        # to change without affecting the outcome for other cells in-step
+        # to change without affecting the outcome for other cells
+        # in-generation
         intermediate_state = deepcopy(self.current_board)
         upcoming_live_cells = self._count_live_cells(self.current_board)
 
