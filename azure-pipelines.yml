@@ -92,5 +92,5 @@ jobs:
 
   - script: |
       python3 -m pip install --user --upgrade twine
-      python3 -m twine upload -r "pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
+      python3 -m twine upload -r "brandon0360/pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
     condition: succeeded()
