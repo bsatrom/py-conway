@@ -21,11 +21,11 @@ To create a game, you'll need to provide dimensions and a starting two-dimensona
 ```python
 from conway.game import Game
 
-beacon = [[0, 1, 0],
+seed = [[0, 1, 0],
           [1, 1, 1],
           [0, 1, 0]]
 
-new_game = Game(3, 3, beacon)
+new_game = Game(3, 3, seed)
 ```
 
 Once the game board is populated, call the `start()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
@@ -33,18 +33,18 @@ Once the game board is populated, call the `start()` method. The game will start
 ```python
 new_game.start()
 
-new_game.board # hold the complete game state after each step
+new_game.current_board # hold the complete game state after each step
 new_game.live_cells # the count of live cells on the board
-new_game.num_steps # the number of steps elapsed in the current game.
+new_game.generations # the number of steps elapsed in the current game.
 ```
 
-It's also possible to call the `step()` method and control the game state yourself from one iteration to the next:
+It's also possible to call the `run_generation()` method and control the game state yourself from one iteration to the next:
 
 ```python
-new_game.step()
+new_game.run_generation()
 ```
 
-Here's an example that runs the game and plots the game board after intialization and the first step:
+Here's an example that runs the game and plots the game board after intialization and the first generation:
 
 ```python
 import matplotlib.pyplot as plt
@@ -54,18 +54,18 @@ def create_zeros(x, y):
     dim_one = [0 for item in range(x)]
     return [dim_one[:] for item in range(y)]
 
-beacon = create_zeros(12, 12)
+seed = create_zeros(12, 12)
 
-beacon[0][1] = 1
-beacon[1][2] = 1
-beacon[2][3] = 1
-game = Game(12, 12, beacon)
+seed[0][1] = 1
+seed[1][2] = 1
+seed[2][3] = 1
+game = Game(12, 12, seed)
 
-plt.imshow(game.beacon, cmap='binary')
+plt.imshow(game.current_board, cmap='binary')
 plt.show()
 
-game.step()
+game.run_generation()
 
-plt.imshow(game.beacon, cmap='binary')
+plt.imshow(game.current_board, cmap='binary')
 plt.show()
 ```
