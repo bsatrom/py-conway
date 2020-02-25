@@ -42,6 +42,8 @@ class Game:
                 raise InitError("Please make sure that the seed matches \
                                  the provided width and height values.")
 
+            self._scan_seed(seed)
+
             self.seed = seed
             self.live_cells = self._count_live_cells(self.seed)
 
@@ -67,6 +69,17 @@ class Game:
         cols, rows = self.board_size
         dim_one = [0 for row in range(rows)]
         return [dim_one[:] for col in range(cols)]
+
+    def _scan_seed(self, seed: list):
+        """
+        Scans each cell in a seed to make sure that only valid data (0, 1)
+        is present. Throws an InitError exception, if not.
+        """
+        for row in seed:
+            for item in row:
+                if item != 0 and item != 1:
+                    raise InitError("Game seed can only contain 0s \
+                                 and 1s.")
 
     def _num_neighbors(self, row: int, column: int) -> int:
         """
