@@ -27,16 +27,6 @@ jobs:
       versionSpec: '$(python.version)'
     displayName: 'Use Python $(python.version)'
 
-  - task: TwineAuthenticate@1
-    condition: succeeded()
-    inputs:
-      artifactFeed: 'brandon0360'
-      pythonUploadServiceConnection: 'pypi-conway'
-
-  - script: |
-      cat $(PYPIRC_PATH)
-    displayName: '.pypirc Debug'
-
   - script: |
       python -m pip install --upgrade pip
       pip install -r requirements.txt
@@ -54,11 +44,14 @@ jobs:
 
   - task: PublishTestResults@2
     condition: succeededOrFailed()
+    displayName: 'Publish PyTest Results'
     inputs:
       testResultsFiles: '**/test-*.xml'
       testRunTitle: 'Publish test results for Python $(python.version)'
 
   - task: PublishCodeCoverageResults@1
+    condition: succeededOrFailed()
+    displayName: 'Publish Code Coverage Results'  
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
@@ -76,6 +69,7 @@ jobs:
     displayName: 'Build Module distribution files'
 
   - task: CopyFiles@2
+    displayName: 'Copy Module Distribution Files'
     inputs:
       sourceFolder: '$(Build.SourcesDirectory)/dist'
       contents: '*'
@@ -95,6 +89,7 @@ jobs:
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
 
   - task: TwineAuthenticate@1
+    displayName: 'Twine Authenticate'
     condition: succeeded()
     inputs:
       artifactFeed: 'brandon0360'
@@ -106,5 +101,6 @@ jobs:
 
   - script: |
       python3 -m pip install --user --upgrade twine
-      python3 -m twine upload -r "brandon0360/pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
+      python3 -m twine upload -r "py-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
+    displayName: 'PyPi Upload'
     condition: succeeded()
