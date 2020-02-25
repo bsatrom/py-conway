@@ -40,7 +40,7 @@ jobs:
 
   - script: |
       pip install pytest pytest-cov pytest-azurepipelines
-      pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+      pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=conway --cov-report=xml --cov-report=html
     displayName: 'pytest'
 
   - task: PublishTestResults@2
@@ -56,8 +56,7 @@ jobs:
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
-      # reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
-
+      
 #Build Module Resources
 - job: Build
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
