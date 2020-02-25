@@ -96,11 +96,7 @@ jobs:
       pythonUploadServiceConnection: 'pypi-conway'
 
   - script: |
-      cat $(PYPIRC_PATH)
-    displayName: '.pypirc Debug'
-
-  - script: |
       python3 -m pip install --user --upgrade twine
-      python3 -m twine upload -r "py-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
+      python3 -m twine upload -r "py-conway" --config-file $(PYPIRC_PATH) '$(Build.ArtifactStagingDirectory)/dist/*'
     displayName: 'PyPi Upload'
     condition: succeeded()
