@@ -3,6 +3,12 @@ from enum import Enum
 from threading import Thread
 
 
+class InitError(Exception):
+    def __init__(self, init_message):
+        message = "Game Initialization failed: " + init_message
+        super().__init__(message)
+
+
 class GameState(Enum):
     READY = 1
     RUNNING = 2
@@ -33,7 +39,7 @@ class Game:
             self.seed = self._create_zeros()
         else:
             if len(seed) != height or len(seed[0]) != width:
-                raise Exception("Please make sure that the seed matches \
+                raise InitError("Please make sure that the seed matches \
                                  the provided width and height values.")
 
             self.seed = seed
