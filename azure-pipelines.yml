@@ -80,11 +80,11 @@ jobs:
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
 
   - task: TwineAuthenticate@0
-    condition: and(succeeded())
+    condition: succeeded()
     inputs:
       pythonUploadServiceConnection: 'pypi-conway'
 
   - script: |
       python3 -m pip install twine
       twine upload -r "pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
-    condition: and(succeeded())
+    condition: succeeded()
