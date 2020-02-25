@@ -51,11 +51,7 @@ jobs:
 
 #Build Module Resources
 - job: Build
-  trigger:
-    tags:
-      include:
-      - '*'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/')
   pool:
     vmImage: 'ubuntu-latest'
   steps:
@@ -84,11 +80,11 @@ jobs:
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
 
   - task: TwineAuthenticate@0
-    condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
+    condition: and(succeeded())
     inputs:
       pythonUploadServiceConnection: 'pypi-conway'
 
   - script: |
       python3 -m pip install twine
       twine upload -r "pypi-conway" --config-file $(PYPIRC_PATH) '(Build.ArtifactStagingDirectory)/dist/*'
-    condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
+    condition: and(succeeded())
