@@ -3,6 +3,9 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+variables:
+  - group: twine
+
 trigger:
   - master
   - pr
@@ -88,18 +91,12 @@ jobs:
       changeLogType: 'commitBased'
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
 
-  - task: TwineAuthenticate@1
-    displayName: 'Twine Authenticate'
-    condition: succeeded()
-    inputs:
-      artifactFeed: 'brandon0360'
-      pythonUploadServiceConnection: 'py-conway'
-
-  - script: |
-      cat $(PYPIRC_PATH)
-
   - script: |
       python3 -m pip install --user --upgrade twine
-      python3 -m twine upload -r "py-conway" --config-file $(PYPIRC_PATH) '$(Build.ArtifactStagingDirectory)/dist/*'
-    displayName: 'PyPi Upload'
+      python3 -m twine upload --skip-existing dist/*
+    displayName: "Upload Package to PyPi"
     condition: succeeded()
+    env:
+      TWINE_USERNAME: $(twine.username)
+      TWINE_PASSWORD: $(twine.password)
+      TWINE_REPOSITORY_URL: "https://upload.pypi.org/legacy/"
