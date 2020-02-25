@@ -2,7 +2,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
 variables:
-  - group: twine_auth
+  - group: job_auth
 
 trigger:
   - master
@@ -57,6 +57,11 @@ jobs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
       
+  - script: |
+      bash <(curl -s https://codecov.io/bash) -t $(codecov.token)
+    displayName: 'Publish Coverage Results to Codecov.io'
+    condition: succeededOrFailed()
+
 #Build Module Resources
 - job: Build
   condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
