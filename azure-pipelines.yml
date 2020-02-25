@@ -49,8 +49,12 @@ jobs:
       summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'
       reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'
 
-      #Build Module Resources
+#Build Module Resources
 - job: Build
+  trigger:
+    tags:
+      include:
+      - '*'
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   pool:
     vmImage: 'ubuntu-latest'
