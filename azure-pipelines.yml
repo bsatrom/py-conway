@@ -84,7 +84,7 @@ jobs:
       changeLogType: 'commitBased'
       assets: '$(Build.ArtifactStagingDirectory)/dist/*'
 
-  - task: TwineAuthenticate@0
+  - task: TwineAuthenticate@1
     condition: succeeded()
     inputs:
       artifactFeed: 'brandon0360'
