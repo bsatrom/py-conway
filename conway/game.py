@@ -27,7 +27,7 @@ class Game:
         """
         self.board_size = (width, height)
         self.live_cells = 0
-        self.num_steps = 0
+        self.generations = 0
         self._thread_active = False
 
         if beacon is None:
@@ -120,6 +120,7 @@ class Game:
         self._thread_active = True
 
     def stop(self):
+        """Stop a game currently running on a background thread."""
         self._thread_active = False
 
     def step(self):
@@ -148,5 +149,5 @@ class Game:
                     intermediate_state[row_index][col_index] = 1
 
         self.board = deepcopy(intermediate_state)
-        self.num_steps += 1
+        self.generations += 1
         self.live_cells = upcoming_live_cells

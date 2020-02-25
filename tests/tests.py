@@ -151,7 +151,7 @@ class TestConway():
         test_game.step()
         test_game.step()
 
-        assert test_game.num_steps == 2
+        assert test_game.generations == 2
 
     # Run the test_game for one iteration on four cells
     def test_3_x_3_four_neighbors_two_runs(self):
