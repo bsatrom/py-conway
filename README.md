@@ -1,5 +1,6 @@
 [![Build Status](https://dev.azure.com/brandon0360/py-conway/_apis/build/status/bsatrom.py-conway?branchName=master)](https://dev.azure.com/brandon0360/py-conway/_build/latest?definitionId=3&branchName=master)
 [![codecov](https://codecov.io/gh/bsatrom/py-conway/branch/master/graph/badge.svg)](https://codecov.io/gh/bsatrom/py-conway)
+![Pyton Version Support](https://img.shields.io/pypi/pyversions/py-conway)
 
 # py-conway
 
