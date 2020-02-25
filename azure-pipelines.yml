@@ -51,7 +51,7 @@ jobs:
 
 #Build Module Resources
 - job: Build
-  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/')
+  condition: and(succeeded(), contains(variables['Build.SourceBranch'], 'refs/tags/'))
   pool:
     vmImage: 'ubuntu-latest'
   steps:
