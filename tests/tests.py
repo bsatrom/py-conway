@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.abspath(
                    os.path.join(os.path.dirname(__file__), '..')))
 
-from conway.game import Game, GameState  # nopep8
+from conway.game import Game, GameState, InitError  # nopep8
 
 
 def create_zeros(x, y):
@@ -204,7 +204,7 @@ class TestConway():
                 [0, 1, 1, 0],
                 [0, 0, 0, 0]]
 
-        with pytest.raises(Exception):
+        with pytest.raises(InitError):
             Game(3, 4, seed)
 
     def test_ensure_that_live_cells_count_is_accurate_before_run(self):
