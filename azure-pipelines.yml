@@ -87,6 +87,7 @@ jobs:
   - task: TwineAuthenticate@0
     condition: succeeded()
     inputs:
+      artifactFeed: 'brandon0360'
       pythonUploadServiceConnection: 'pypi-conway'
 
   - script: |
