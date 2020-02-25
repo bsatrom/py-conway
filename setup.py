@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="py-conway",
-    version="0.0.14",
+    version="0.0.15",
     author="Brandon Satrom",
     author_email="bsatrom@gmail.com",
     description="TDD-style implementation of Conway's Game of Life in Python",
