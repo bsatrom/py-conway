@@ -93,7 +93,10 @@ jobs:
     condition: succeeded()
     inputs:
       artifactFeed: 'brandon0360'
-      pythonUploadServiceConnection: 'pypi-conway'
+      pythonUploadServiceConnection: 'py-conway'
+
+  - script: |
+      cat $(PYPIRC_PATH)
 
   - script: |
       python3 -m pip install --user --upgrade twine
