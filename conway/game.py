@@ -14,33 +14,32 @@ class Game:
     Class for running a game of Conway's Game of Life on a virtual
     two-dimensional board of any size.
     """
-    def __init__(self, width: int = 6, height: int = 6, beacon: list = None):
+    def __init__(self, width: int = 6, height: int = 6, seed: list = None):
         """
-        Intialize the game based on provided board size values and a
-        starter beacon.
+        Intialize the game based on provided board size values and a seed.
 
         Keyword Arguments:
         width -- the width (in columns) of the game board
         height -- the height (in rows) of the game board
-        beacon -- A two-dimensional list with 1 and 0 values that
+        seed -- A two-dimensional list with 1 and 0 values that
                   should be set to the initial game state.
         """
         self.board_size = (width, height)
         self.live_cells = 0
-        self.num_steps = 0
+        self.generations = 0
         self._thread_active = False
 
-        if beacon is None:
-            self.beacon = self._create_zeros()
+        if seed is None:
+            self.seed = self._create_zeros()
         else:
-            if len(beacon) != height or len(beacon[0]) != width:
-                raise Exception("Please make sure that the beacon matches \
+            if len(seed) != height or len(seed[0]) != width:
+                raise Exception("Please make sure that the seed matches \
                                  the provided width and height values.")
 
-            self.beacon = beacon
-            self.live_cells = self._count_live_cells(self.beacon)
+            self.seed = seed
+            self.live_cells = self._count_live_cells(self.seed)
 
-        self.board = deepcopy(self.beacon)
+        self.current_board = deepcopy(self.seed)
         self.state = GameState.READY
 
     def _count_live_cells(self, grid_state: list) -> int:
@@ -97,7 +96,7 @@ class Game:
             elif n_row == num_rows or n_col == num_cols:
                 continue
             else:
-                if self.board[n_row][n_col] == 1:
+                if self.current_board[n_row][n_col] == 1:
                     neighbors += 1
 
         return neighbors
@@ -110,7 +109,7 @@ class Game:
                 if (self.live_cells == 0 or not self._thread_active):
                     self.state = GameState.FINISHED
                     break
-                self.step()
+                self.run_generation()
 
     def start(self):
         """Run the game automatically on a background thread."""
@@ -120,9 +119,10 @@ class Game:
         self._thread_active = True
 
     def stop(self):
+        """Stop a game currently running on a background thread."""
         self._thread_active = False
 
-    def step(self):
+    def run_generation(self):
         """
         Enumerate over every element and determine its number of neighbors
         For each cell, check all eight neighbors and turn on or off.
@@ -130,23 +130,24 @@ class Game:
         the entire state grid is updated at once.
         """
         # Get a deep copy of the state to track cells that will need
-        # to change without affecting the outcome for other cells in-step
-        intermediate_state = deepcopy(self.board)
-        upcoming_live_cells = self._count_live_cells(self.board)
+        # to change without affecting the outcome for other cells
+        # in-generation
+        intermediate_state = deepcopy(self.current_board)
+        upcoming_live_cells = self._count_live_cells(self.current_board)
 
-        for row_index, row in enumerate(self.board):
+        for row_index, row in enumerate(self.current_board):
             for col_index in range(len(row)):
                 neighbors = self._num_neighbors(row_index, col_index)
 
                 if (neighbors < 2 or neighbors > 3):
-                    if (self.board[row_index][col_index] == 1):
+                    if (self.current_board[row_index][col_index] == 1):
                         upcoming_live_cells -= 1
                     intermediate_state[row_index][col_index] = 0
                 elif (neighbors == 3):
-                    if (self.board[row_index][col_index] == 0):
+                    if (self.current_board[row_index][col_index] == 0):
                         upcoming_live_cells += 1
                     intermediate_state[row_index][col_index] = 1
 
-        self.board = deepcopy(intermediate_state)
-        self.num_steps += 1
+        self.current_board = deepcopy(intermediate_state)
+        self.generations += 1
         self.live_cells = upcoming_live_cells
