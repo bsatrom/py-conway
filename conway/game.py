@@ -14,15 +14,14 @@ class Game:
     Class for running a game of Conway's Game of Life on a virtual
     two-dimensional board of any size.
     """
-    def __init__(self, width: int = 6, height: int = 6, beacon: list = None):
+    def __init__(self, width: int = 6, height: int = 6, seed: list = None):
         """
-        Intialize the game based on provided board size values and a
-        starter beacon.
+        Intialize the game based on provided board size values and a seed.
 
         Keyword Arguments:
         width -- the width (in columns) of the game board
         height -- the height (in rows) of the game board
-        beacon -- A two-dimensional list with 1 and 0 values that
+        seed -- A two-dimensional list with 1 and 0 values that
                   should be set to the initial game state.
         """
         self.board_size = (width, height)
@@ -30,17 +29,17 @@ class Game:
         self.generations = 0
         self._thread_active = False
 
-        if beacon is None:
-            self.beacon = self._create_zeros()
+        if seed is None:
+            self.seed = self._create_zeros()
         else:
-            if len(beacon) != height or len(beacon[0]) != width:
-                raise Exception("Please make sure that the beacon matches \
+            if len(seed) != height or len(seed[0]) != width:
+                raise Exception("Please make sure that the seed matches \
                                  the provided width and height values.")
 
-            self.beacon = beacon
-            self.live_cells = self._count_live_cells(self.beacon)
+            self.seed = seed
+            self.live_cells = self._count_live_cells(self.seed)
 
-        self.board = deepcopy(self.beacon)
+        self.board = deepcopy(self.seed)
         self.state = GameState.READY
 
     def _count_live_cells(self, grid_state: list) -> int:
