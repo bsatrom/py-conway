@@ -5,7 +5,7 @@ from threading import Thread
 
 class InitError(Exception):
     def __init__(self, init_message):
-        message = f"Game Initialization failed: {init_message}"
+        message = "Game Initialization failed: " + init_message
         super().__init__(message)
 
 
