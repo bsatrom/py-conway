@@ -76,7 +76,7 @@ class TestConway():
 
         test_game = Game(3, 3, seed)
         test_game.step()
-        assert test_game.board == create_zeros(3, 3)
+        assert test_game.current_board == create_zeros(3, 3)
 
     # Run the test_game for one iteration on three cells
     def test_3_x_3_three_neighbors_single_run(self):
@@ -91,7 +91,7 @@ class TestConway():
         test_game = Game(3, 3, seed)
         test_game.step()
 
-        assert test_game.board == expected_state
+        assert test_game.current_board == expected_state
 
     # Run the test_game for one iteration on four cells
     def test_3_x_3_four_neighbors_single_run(self):
@@ -106,7 +106,7 @@ class TestConway():
         test_game = Game(3, 3, seed)
         test_game.step()
 
-        assert test_game.board == expected_state
+        assert test_game.current_board == expected_state
 
     # Run the test_game for one iteration on four cells
     def test_4_x_3_three_neighbors_single_run(self):
@@ -121,7 +121,7 @@ class TestConway():
         test_game = Game(4, 3, seed)
         test_game.step()
 
-        assert test_game.board == expected_state
+        assert test_game.current_board == expected_state
 
     # Test the number of live cells on an empty seed
     def test_3_x_3_empty_seed_no_live_cells(self):
@@ -171,7 +171,7 @@ class TestConway():
         test_game.step()
         test_game.step()
 
-        assert test_game.board == expected_state
+        assert test_game.current_board == expected_state
 
     def test_default_game_state_ready(self):
         test_game = Game()
@@ -214,7 +214,7 @@ class TestConway():
                 [0, 0, 0, 0]]
 
         test_game = Game(4, 4, seed)
-        test_game.board[0][0] = 1
+        test_game.current_board[0][0] = 1
 
         test_game.step()
 
@@ -222,9 +222,9 @@ class TestConway():
 
     def test_no_seed_ensure_live_cells_count_is_accurate_before_run(self):
         test_game = Game(4, 4)
-        test_game.board[0][0] = 1
-        test_game.board[0][1] = 1
-        test_game.board[0][2] = 1
+        test_game.current_board[0][0] = 1
+        test_game.current_board[0][1] = 1
+        test_game.current_board[0][2] = 1
 
         test_game.step()
 
