@@ -1,6 +1,7 @@
 from copy import deepcopy
 from enum import Enum
 from threading import Thread
+from random import randint
 
 
 class InitError(Exception):
@@ -20,7 +21,8 @@ class Game:
     Class for running a game of Conway's Game of Life on a virtual
     two-dimensional board of any size.
     """
-    def __init__(self, width: int = 6, height: int = 6, seed: list = None):
+    def __init__(self, width: int = 6, height: int = 6,
+                 seed: list = None, random: bool = False):
         """
         Intialize the game based on provided board size values and a seed.
 
@@ -28,7 +30,9 @@ class Game:
         width -- the width (in columns) of the game board
         height -- the height (in rows) of the game board
         seed -- A two-dimensional list with 1 and 0 values that
-                  should be set to the initial game state.
+                should be set to the initial game state.
+        random -- Boolean indicating whether a random seed should
+                  be created. Ignored if a seed is provided.
         """
         self.board_size = (width, height)
         self.live_cells = 0
@@ -36,7 +40,11 @@ class Game:
         self._thread_active = False
 
         if seed is None:
-            self.seed = self._create_zeros()
+            if random:
+                self.seed = self._create_random_seed()
+                self.live_cells = self._count_live_cells(self.seed)
+            else:
+                self.seed = self._create_zeros()
         else:
             if len(seed) != height or len(seed[0]) != width:
                 raise InitError("Please make sure that the seed matches \
@@ -67,8 +75,14 @@ class Game:
         provided board_size, returns a two-dimensional list of zeros.
         """
         cols, rows = self.board_size
-        dim_one = [0 for row in range(rows)]
-        return [dim_one[:] for col in range(cols)]
+        return [[0 for row in range(rows)] for col in range(cols)]
+
+    def _create_random_seed(self) -> list:
+        """
+        Initialize the board with random alive (1) and dead (0) cells.
+        """
+        cols, rows = self.board_size
+        return [[randint(0, 1) for row in range(rows)] for col in range(cols)]
 
     def _scan_seed(self, seed: list):
         """
