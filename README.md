@@ -22,8 +22,8 @@ To create a game, you'll need to provide dimensions and a starting two-dimensona
 from conway.game import Game
 
 seed = [[0, 1, 0],
-          [1, 1, 1],
-          [0, 1, 0]]
+        [1, 1, 1],
+        [0, 1, 0]]
 
 new_game = Game(3, 3, seed)
 ```
