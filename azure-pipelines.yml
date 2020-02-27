@@ -67,7 +67,7 @@ jobs:
   - script: |
       bash <(curl -s https://codecov.io/bash) -t $(codecov.token)
     displayName: 'Publish Coverage Results to Codecov.io'
-    condition: and(succeededOrFailed(), eq($(python.version), '3.7'))
+    condition: and(succeededOrFailed(), eq(variables['Python.Version'], '3.7'))
     
 
 #Build Module Resources
