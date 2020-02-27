@@ -38,7 +38,12 @@ jobs:
   - script: |
       pip install pycodestyle
       pycodestyle --show-source --show-pep8 tests/ example/ conway/
-    displayName: 'pep8'
+    displayName: 'pycodestyle'
+
+  - script: |
+      pip install pydocstyle
+      pydocstyle conway/
+    displayName: 'pydocstyle'
 
   - script: |
       pip install pytest pytest-cov pytest-azurepipelines
@@ -62,7 +67,8 @@ jobs:
   - script: |
       bash <(curl -s https://codecov.io/bash) -t $(codecov.token)
     displayName: 'Publish Coverage Results to Codecov.io'
-    condition: succeededOrFailed()
+    condition: and(succeededOrFailed(), eq(variables['Python.Version'], '3.7'))
+    
 
 #Build Module Resources
 - job: Build

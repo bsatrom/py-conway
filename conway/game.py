@@ -1,3 +1,9 @@
+"""Game module for py-conway.
+
+This module contains the core functionality for running Conway's Game
+of Life games, including the main Game class, GameState Enum, and
+InitError exception object.
+"""
 from copy import deepcopy
 from enum import Enum
 from threading import Thread
@@ -5,34 +11,45 @@ from random import randint
 
 
 class InitError(Exception):
-    def __init__(self, init_message):
+    """Class for wrapping exceptions related to game initialization."""
+
+    def __init__(self, init_message: str):
+        """Initialize the exception class.
+
+        Args:
+            init_message (str): Message to include in the call to base
+        """
         message = "Game Initialization failed: " + init_message
         super().__init__(message)
 
 
 class GameState(Enum):
+    """Enum for managing state in the Game class."""
+
     READY = 1
     RUNNING = 2
     FINISHED = 3
 
 
 class Game:
-    """
+    """Main module class.
+
     Class for running a game of Conway's Game of Life on a virtual
     two-dimensional board of any size.
     """
+
     def __init__(self, width: int = 6, height: int = 6,
                  seed: list = None, random: bool = False):
         """
         Intialize the game based on provided board size values and a seed.
 
-        Keyword Arguments:
-        width -- the width (in columns) of the game board
-        height -- the height (in rows) of the game board
-        seed -- A two-dimensional list with 1 and 0 values that
-                should be set to the initial game state.
-        random -- Boolean indicating whether a random seed should
-                  be created. Ignored if a seed is provided.
+        Args:
+            width (int): the width (in columns) of the game board
+            height (int): the height (in rows) of the game board
+            seed (int): A two-dimensional list with 1 and 0 values that
+                    should be set to the initial game state.
+            random (bool): Boolean indicating whether a random seed should
+                    be created. Ignored if a seed is provided.
         """
         self.board_size = (width, height)
         self.live_cells = 0
@@ -62,32 +79,42 @@ class Game:
         """
         Count the number of live cells in a provided X by Y grid.
 
-        Positional arguments:
-        grid_state -- An X by Y two-dimensional list with 1 and 0 values.
+        Args:
+            grid_state (list): An X by Y two-dimensional list
+            with 1 and 0 values.
+
+        Returns:
+            int: the count of live cells on the board.
         """
         return len([col_val
                     for row in grid_state
                     for col_val in row if col_val == 1])
 
     def _create_zeros(self) -> list:
-        """
-        Initialize the board with all cells "dead" or off. Based on the
-        provided board_size, returns a two-dimensional list of zeros.
+        """Initialize the board with all cells "dead" or off.
+
+        Returns:
+            list: Based on the provided board_size, returns a
+            two-dimensional list of zeros.
         """
         cols, rows = self.board_size
         return [[0 for row in range(rows)] for col in range(cols)]
 
     def _create_random_seed(self) -> list:
-        """
-        Initialize the board with random alive (1) and dead (0) cells.
+        """Initialize the board with random alive (1) and dead (0) cells.
+
+        Returns:
+            list: Based on provided board_size, returns a two-dimensional
+            list with random 0 and 1 values.
         """
         cols, rows = self.board_size
         return [[randint(0, 1) for row in range(rows)] for col in range(cols)]
 
     def _scan_seed(self, seed: list):
-        """
-        Scans each cell in a seed to make sure that only valid data (0, 1)
-        is present. Throws an InitError exception, if not.
+        """Scan each cell in a seed to ensure valid data (0, 1).
+
+        Raises:
+            InitError: if any value other than 0 or 1 is found.
         """
         for row in seed:
             for item in row:
@@ -96,14 +123,14 @@ class Game:
                                  and 1s.")
 
     def _num_neighbors(self, row: int, column: int) -> int:
-        """
-        Determine the number of neighbors to a given cell that
-        are "alive" or on. each cell has between three and eight
-        potential neighbors.
+        """Determine the number of live neighbors for a given cell.
 
-        Positional arguments:
-        row -- The row of the current cell
-        col -- The column of the current cell
+        Args:
+            row (int): The row of the current cell
+            col (int): The column of the current cell
+
+        Returns:
+            int: Count of living neigbors adjecnt to the provided cell.
         """
         neighbors = 0
         num_cols, num_rows = self.board_size
@@ -156,7 +183,8 @@ class Game:
         self._thread_active = False
 
     def run_generation(self):
-        """
+        """Run a single generation across all cells.
+
         Enumerate over every element and determine its number of neighbors
         For each cell, check all eight neighbors and turn on or off.
         Once every cell has been checked against Conway's three rules,
