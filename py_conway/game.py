@@ -193,16 +193,23 @@ class Game:
                     break
                 self.run_generation()
 
-    def start(self):
+    def start_thread(self):
         """Run the game automatically on a background thread."""
         thread = Thread(target=self._run, args=())
         thread.daemon = True
         thread.start()
         self._thread_active = True
 
-    def stop(self):
+    def stop_thread(self):
         """Stop a game currently running on a background thread."""
         self._thread_active = False
+
+    def start(self):
+        """Initialize important game properties."""
+        self.current_board = deepcopy(self.seed)
+        self.state = GameState.RUNNING
+        self.generations = 0
+        self.live_cells = self._count_live_cells(self.current_board)
 
     def run_generation(self):
         """Run a single generation across all cells.
@@ -212,6 +219,9 @@ class Game:
         Once every cell has been checked against Conway's three rules,
         the entire state grid is updated at once.
         """
+        if (self.state != GameState.RUNNING):
+            return
+
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells
         # in-generation
