@@ -37,17 +37,17 @@ jobs:
 
   - script: |
       pip install pycodestyle
-      pycodestyle --show-source --show-pep8 tests/ example/ conway/
+      pycodestyle --show-source --show-pep8 tests/ example/ py_conway/
     displayName: 'pycodestyle'
 
   - script: |
       pip install pydocstyle
-      pydocstyle conway/
+      pydocstyle py_conway/
     displayName: 'pydocstyle'
 
   - script: |
       pip install pytest pytest-cov pytest-azurepipelines
-      pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=conway --cov-report=xml --cov-report=html
+      pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=py_conway --cov-report=xml --cov-report=html
     displayName: 'pytest'
 
   - task: PublishTestResults@2

@@ -1,10 +1,10 @@
 test:
-	pycodestyle --show-source --show-pep8 tests/ example/ conway/
-	pydocstyle conway/
-	pytest --cov=conway
+	pycodestyle --show-source --show-pep8 tests/ example/ py_conway/
+	pydocstyle py_conway/
+	pytest tests --cov=py_conway
 
 coverage:
-	pytest tests/* --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
+	pytest tests --doctest-modules --junitxml=junit/test-results.xml --cov=. --cov-report=xml --cov-report=html
 
 run_build:
 	python3 setup.py sdist bdist_wheel

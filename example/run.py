@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.abspath(
                    os.path.join(os.path.dirname(__file__), '..')))
 
-from conway.game import Game  # nopep8
+from py_conway.game import Game  # nopep8
 
 
 def create_zeros(x, y):
