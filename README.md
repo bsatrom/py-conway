@@ -19,7 +19,7 @@ pip install py-conway
 To create a game, you'll need to provide dimensions and a starting two-dimensonal list to function as the game board. For example:
 
 ```python
-from conway.game import Game
+from py_conway import Game
 
 seed = [[0, 1, 0],
         [1, 1, 1],
