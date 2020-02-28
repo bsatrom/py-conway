@@ -82,6 +82,8 @@ def test_3_x_3_single_cell_single_run():
             [0, 0, 0]]
 
     test_game = Game(3, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
     assert test_game.current_board == create_zeros(3, 3)
 
@@ -97,6 +99,8 @@ def test_3_x_3_three_neighbors_single_run():
                       [0, 0, 0]]
 
     test_game = Game(3, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
 
     assert test_game.current_board == expected_state
@@ -113,6 +117,8 @@ def test_3_x_3_four_neighbors_single_run():
                       [1, 1, 1]]
 
     test_game = Game(3, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
 
     assert test_game.current_board == expected_state
@@ -129,6 +135,8 @@ def test_4_x_3_three_neighbors_single_run():
                       [0, 1, 1, 0]]
 
     test_game = Game(4, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
 
     assert test_game.current_board == expected_state
@@ -158,6 +166,8 @@ def test_increment_live_cells_after_update():
             [0, 1, 0]]
 
     test_game = Game(3, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
 
     assert test_game.live_cells == 8
@@ -165,6 +175,7 @@ def test_increment_live_cells_after_update():
 
 def test_update_generations_count_after_each_generation():
     test_game = Game(2, 2, [[1, 0], [0, 1]])
+    test_game.start()
 
     test_game.run_generation()
     test_game.run_generation()
@@ -183,6 +194,8 @@ def test_3_x_3_four_neighbors_two_runs():
                       [1, 0, 1]]
 
     test_game = Game(3, 3, seed)
+    test_game.start()
+
     test_game.run_generation()
     test_game.run_generation()
 
@@ -234,6 +247,8 @@ def test_ensure_that_live_cells_count_is_accurate_before_run():
             [0, 0, 0, 0]]
 
     test_game = Game(4, 4, seed)
+    test_game.start()
+
     test_game.current_board[0][0] = 1
 
     test_game.run_generation()
@@ -243,6 +258,8 @@ def test_ensure_that_live_cells_count_is_accurate_before_run():
 
 def test_no_seed_ensure_live_cells_count_is_accurate_before_run():
     test_game = Game(4, 4)
+    test_game.start()
+
     test_game.current_board[0][0] = 1
     test_game.current_board[0][1] = 1
     test_game.current_board[0][2] = 1
@@ -259,7 +276,7 @@ def test_still_life_game_will_continue_to_run():
             [0, 0, 0, 0]]
 
     test_game = Game(4, 4, seed)
-    test_game.start()
+    test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
 
@@ -271,11 +288,11 @@ def test_still_life_game_can_be_stopped():
             [0, 0, 0, 0]]
 
     test_game = Game(4, 4, seed)
-    test_game.start()
+    test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
 
-    test_game.stop()
+    test_game.stop_thread()
 
     assert test_game.state, GameState.FINISHED
 
@@ -325,6 +342,31 @@ def test_enable_boundary_wrapping_on_board():
                       [0, 0, 0, 0],
                       [0, 0, 0, 0]]
 
+    test_game.start()
     test_game.run_generation()
 
     assert test_game.current_board == expected_board
+
+
+def test_dont_run_generation_when_game_not_started():
+    test_game = Game(random=True)
+
+    test_game.run_generation()
+
+    assert test_game.generations == 0
+
+
+def test_start_can_be_used_to_restart_the_game():
+    test_game = Game(random=True)
+
+    random_seed = test_game.current_board
+
+    test_game.start()
+    test_game.run_generation()
+    test_game.run_generation()
+
+    assert test_game.current_board != random_seed
+
+    test_game.start()
+
+    assert test_game.current_board == random_seed
