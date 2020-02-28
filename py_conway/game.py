@@ -38,6 +38,9 @@ class Game:
     two-dimensional board of any size.
     """
 
+    generations = 0
+    live_cells = 0
+
     def __init__(self, width: int = 6, height: int = 6,
                  seed: list = None, random: bool = False,
                  enforce_boundary: bool = True):
@@ -56,8 +59,6 @@ class Game:
                     side.
         """
         self.board_size = (width, height)
-        self.live_cells = 0
-        self.generations = 0
         self._thread_active = False
         self._enforce_boundary = enforce_boundary
 

@@ -354,3 +354,19 @@ def test_dont_run_generation_when_game_not_started():
     test_game.run_generation()
 
     assert test_game.generations == 0
+
+
+def test_start_can_be_used_to_restart_the_game():
+    test_game = Game(random=True)
+
+    random_seed = test_game.current_board
+
+    test_game.start()
+    test_game.run_generation()
+    test_game.run_generation()
+
+    assert test_game.current_board != random_seed
+
+    test_game.start()
+
+    assert test_game.current_board == random_seed

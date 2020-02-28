@@ -34,14 +34,22 @@ If no seed is provided, the game can either generate a seed of zeroes, or a rand
 new_game = Game(12, 12, random=True)
 ```
 
-Once the game board is populated, call the `start()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
+Once the game board is populated, call the `start()` method. The game values and state will be initialized so you can interact with the board one step at a time. You can also use this method to re-initialize the game:
 
 ```python
 new_game.start()
+```
+
+You can also instruct the game to self-run with the `start_thread()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
+
+```python
+new_game.start_thread()
 
 new_game.current_board # hold the complete game state after each step
 new_game.live_cells # the count of live cells on the board
 new_game.generations # the number of steps elapsed in the current game.
+
+new_game.stop_thread()
 ```
 
 It's also possible to call the `run_generation()` method and control the game state yourself from one iteration to the next:
