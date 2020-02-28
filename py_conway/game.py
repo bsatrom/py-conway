@@ -39,7 +39,8 @@ class Game:
     """
 
     def __init__(self, width: int = 6, height: int = 6,
-                 seed: list = None, random: bool = False):
+                 seed: list = None, random: bool = False,
+                 enforce_boundary: bool = True):
         """
         Intialize the game based on provided board size values and a seed.
 
@@ -50,11 +51,15 @@ class Game:
                     should be set to the initial game state.
             random (bool): Boolean indicating whether a random seed should
                     be created. Ignored if a seed is provided.
+            enforce_boundary (bool): Boolean indicating whether cells on
+                    the edge of the board should wrap around to the other
+                    side.
         """
         self.board_size = (width, height)
         self.live_cells = 0
         self.generations = 0
         self._thread_active = False
+        self._enforce_boundary = enforce_boundary
 
         if seed is None:
             if random:
@@ -149,15 +154,32 @@ class Game:
         for n_row, n_col in neighbor_set:
             # if row == 0, don't check the row above
             # if col == 0, don't check the column before
+            # unless enforce_boundary is False, in which case
+            # wrap around to the other side of the board.
             if n_row < 0 or n_col < 0:
-                continue
+                if self._enforce_boundary:
+                    continue
+
+                if n_row < 0:
+                    n_row = num_rows - 1
+                if n_col < 0:
+                    n_col = num_cols - 1
+
             # if row + 1 == num_rows, don't check the row after
             # if col + 1 == num_cols, don't check the col after
-            elif n_row == num_rows or n_col == num_cols:
-                continue
-            else:
-                if self.current_board[n_row][n_col] == 1:
-                    neighbors += 1
+            # unless enforce_boundary is False, in which case
+            # wrap around to the other side of the board.
+            if n_row == num_rows or n_col == num_cols:
+                if self._enforce_boundary:
+                    continue
+
+                if n_row == num_rows:
+                    n_row = 0
+                if n_col == num_cols:
+                    n_col = 0
+
+            if self.current_board[n_row][n_col] == 1:
+                neighbors += 1
 
         return neighbors
 
