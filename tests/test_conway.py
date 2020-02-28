@@ -310,3 +310,21 @@ def test_generate_random_seed_generates_random_seed():
     test_game = Game(12, 12, random=True)
 
     assert test_game.live_cells > 0
+
+
+def test_enable_boundary_wrapping_on_board():
+    seed = [[1, 0, 0, 0],
+            [1, 0, 0, 0],
+            [1, 0, 0, 0],
+            [0, 0, 0, 0]]
+
+    test_game = Game(4, 4, seed=seed, enforce_boundary=False)
+
+    expected_board = [[0, 0, 0, 0],
+                      [1, 1, 0, 1],
+                      [0, 0, 0, 0],
+                      [0, 0, 0, 0]]
+
+    test_game.run_generation()
+
+    assert test_game.current_board == expected_board

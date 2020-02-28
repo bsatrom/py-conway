@@ -50,6 +50,27 @@ It's also possible to call the `run_generation()` method and control the game st
 new_game.run_generation()
 ```
 
+According to the rules of Conway's Game of Life, the board is meant to be infinite. If you wish to 
+emulate this behavior in your own games, you can wrap the board around on itself with the initialization flag `enforce_boundary`, which is true by default.
+
+```python
+seed = [[1, 0, 0, 0],
+        [1, 0, 0, 0],
+        [1, 0, 0, 0],
+        [0, 0, 0, 0]]
+
+new_game = Game(4, 4, seed=seed, enforce_boundary=False)
+```
+
+If the above code is run for a single generation, the board will look like this
+
+```
+[[0, 0, 0, 0],
+ [1, 1, 0, 1],
+ [0, 0, 0, 0],
+ [0, 0, 0, 0]]
+```
+
 Here's an example that runs the game and plots the game board after intialization and the first generation:
 
 ```python
