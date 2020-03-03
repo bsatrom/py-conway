@@ -30,7 +30,7 @@ def test_test_game_init_seed():
 
 # Test for defaults
 def test_test_game_init_defaults():
-    test_game = Game()
+    test_game = Game(6, 6)
     assert test_game.board_size == (6, 6)
     assert test_game.seed == create_zeros(6, 6)
 
@@ -204,7 +204,7 @@ def test_3_x_3_four_neighbors_two_runs():
 
 
 def test_default_game_state_ready():
-    test_game = Game()
+    test_game = Game(3, 3)
 
     assert test_game.state == GameState.READY
 
@@ -224,7 +224,7 @@ def test_start_game_changes_state_to_running():
 
 
 def test_empty_board_run_game_until_no_living_cells_left():
-    test_game = Game()
+    test_game = Game(3, 3)
     test_game.state = GameState.READY
     test_game._run()
 
@@ -237,8 +237,9 @@ def test_ensure_that_width_height_and_seed_match():
             [0, 1, 1, 0],
             [0, 0, 0, 0]]
 
-    with pytest.raises(InitError):
-        Game(3, 4, seed)
+    my_game = Game(3, 4, seed)
+
+    assert my_game.board_size == (4, 4)
 
 
 def test_ensure_that_live_cells_count_is_accurate_before_run():
@@ -350,7 +351,7 @@ def test_enable_boundary_wrapping_on_board():
 
 
 def test_dont_run_generation_when_game_not_started():
-    test_game = Game(random=True)
+    test_game = Game(6, 6, random=True)
 
     test_game.run_generation()
 
@@ -358,7 +359,7 @@ def test_dont_run_generation_when_game_not_started():
 
 
 def test_start_can_be_used_to_restart_the_game():
-    test_game = Game(random=True)
+    test_game = Game(6, 6, random=True)
 
     random_seed = test_game.current_board
 
@@ -374,7 +375,7 @@ def test_start_can_be_used_to_restart_the_game():
 
 
 def test_reseed_can_be_used_to_create_a_new_random_seed():
-    test_game = Game(random=True)
+    test_game = Game(6, 6, random=True)
 
     first_random_seed = deepcopy(test_game.current_board)
 
@@ -384,7 +385,7 @@ def test_reseed_can_be_used_to_create_a_new_random_seed():
 
 
 def test_cannot_reseed_when_game_is_active():
-    test_game = Game(random=True)
+    test_game = Game(6, 6, random=True)
 
     first_random_seed = deepcopy(test_game.current_board)
 
@@ -392,3 +393,24 @@ def test_cannot_reseed_when_game_is_active():
     test_game.reseed()
 
     assert first_random_seed == test_game.current_board
+
+
+def test_empty_width_raises_error_when_no_seed_provided():
+    with pytest.raises(InitError):
+        Game(width=0, random=True)
+
+
+def test_empty_height_raises_error_when_no_seed_provided():
+    with pytest.raises(InitError):
+        Game(height=0, random=True)
+
+
+def test_calculate_proper_width_and_height_when_seed_provided():
+    seed = [[1, 0, 0],
+            [1, 0, 0],
+            [1, 0, 0],
+            [0, 0, 0]]
+
+    my_game = Game(seed=seed)
+
+    assert my_game.board_size == (3, 4)
