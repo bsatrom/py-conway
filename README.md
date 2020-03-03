@@ -52,7 +52,7 @@ new_game.generations # the number of steps elapsed in the current game.
 new_game.stop_thread()
 ```
 
-It's also possible to call the `run_generation()` method and control the game state yourself from one iteration to the next:
+It's also possible to call the `run_generation()` method and control the game state yourself from one iteration to the next. Make sure you call the `start()` method first:
 
 ```python
 new_game.run_generation()
@@ -99,6 +99,7 @@ game = Game(12, 12, seed)
 plt.imshow(game.current_board, cmap='binary')
 plt.show()
 
+game.start()
 game.run_generation()
 
 plt.imshow(game.current_board, cmap='binary')
