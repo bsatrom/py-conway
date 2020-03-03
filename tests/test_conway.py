@@ -1,4 +1,5 @@
 import pytest
+from copy import deepcopy
 
 import os
 import sys
@@ -370,3 +371,24 @@ def test_start_can_be_used_to_restart_the_game():
     test_game.start()
 
     assert test_game.current_board == random_seed
+
+
+def test_reseed_can_be_used_to_create_a_new_random_seed():
+    test_game = Game(random=True)
+
+    first_random_seed = deepcopy(test_game.current_board)
+
+    test_game.reseed()
+
+    assert first_random_seed != test_game.current_board
+
+
+def test_cannot_reseed_when_game_is_active():
+    test_game = Game(random=True)
+
+    first_random_seed = deepcopy(test_game.current_board)
+
+    test_game.start()
+    test_game.reseed()
+
+    assert first_random_seed == test_game.current_board
