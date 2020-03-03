@@ -79,29 +79,35 @@ If the above code is run for a single generation, the board will look like this
  [0, 0, 0, 0]]
 ```
 
-Here's an example that runs the game and plots the game board after intialization and the first generation:
+Here's an example that runs the game and plots the game board after intialization and the first generation. You can run this from the [example folder](/example), either in a Jupyter notebook or standalone script:
 
 ```python
 import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 from py-conway import Game
 
-def create_zeros(x, y):
-    dim_one = [0 for item in range(x)]
-    return [dim_one[:] for item in range(y)]
+my_game = Game(12, 12, random=True, enforce_boundary=False)
+my_game.start()
 
-seed = create_zeros(12, 12)
+board, ax = plt.subplots()
+plt.title("Conway's Game of Life")
 
-seed[0][1] = 1
-seed[1][2] = 1
-seed[2][3] = 1
-game = Game(12, 12, seed)
+ylim, xlim = my_game.board_size
 
-plt.imshow(game.current_board, cmap='binary')
-plt.show()
+ax.set_xlim(0, xlim)
+ax.set_ylim(0, ylim)
 
-game.start()
-game.run_generation()
+image = plt.imshow(my_game.current_board, animated=True, cmap='binary')
 
-plt.imshow(game.current_board, cmap='binary')
+
+def update(*args, **kwargs):
+    my_game.run_generation()
+    plt.xlabel(f"Generation: {my_game.generations} |\
+                Population: {my_game.live_cells}")
+    image.set_array(my_game.current_board)
+    return image,
+
+
+conway_animation = FuncAnimation(board, update, interval=50, blit=True)
 plt.show()
 ```
