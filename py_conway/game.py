@@ -41,7 +41,7 @@ class Game:
     generations = 0
     live_cells = 0
 
-    def __init__(self, width: int = 6, height: int = 6,
+    def __init__(self, width: int = 0, height: int = 0,
                  seed: list = None, random: bool = False,
                  enforce_boundary: bool = True):
         """
@@ -63,6 +63,9 @@ class Game:
         self._enforce_boundary = enforce_boundary
 
         if seed is None:
+            if width == 0 or height == 0:
+                raise InitError("Please provide width and height values \
+                                 geater than 0.")
             if random:
                 self.seed = self._create_random_seed()
                 self.live_cells = self._count_live_cells(self.seed)
@@ -70,8 +73,7 @@ class Game:
                 self.seed = self._create_zeros()
         else:
             if len(seed) != height or len(seed[0]) != width:
-                raise InitError("Please make sure that the seed matches \
-                                 the provided width and height values.")
+                self.board_size = (len(seed[0]), len(seed))
 
             self._scan_seed(seed)
 
