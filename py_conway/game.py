@@ -212,6 +212,18 @@ class Game:
         self.generations = 0
         self.live_cells = self._count_live_cells(self.current_board)
 
+    def reseed(self):
+        """Reseed the game board.
+
+        Should only be called when the game is not started. Calling when a game
+        is running will return silently.
+        """
+        if self.state != GameState.RUNNING:
+            self.seed = self._create_random_seed()
+            self.live_cells = self._count_live_cells(self.seed)
+            self.current_board = deepcopy(self.seed)
+            self.state = GameState.READY
+
     def run_generation(self):
         """Run a single generation across all cells.
 
