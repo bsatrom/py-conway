@@ -4,7 +4,6 @@ This module contains the core functionality for running Conway's Game
 of Life games, including the main Game class, GameState Enum, and
 InitError exception object.
 """
-from copy import deepcopy
 from enum import Enum
 from threading import Thread
 from random import randint
@@ -80,7 +79,7 @@ class Game:
             self.seed = seed
             self.live_cells = self._count_live_cells(self.seed)
 
-        self.current_board = deepcopy(self.seed)
+        self.current_board = [row[:] for row in self.seed]
         self.state = GameState.READY
 
     def _count_live_cells(self, grid_state: list) -> int:
@@ -209,7 +208,7 @@ class Game:
 
     def start(self):
         """Initialize important game properties."""
-        self.current_board = deepcopy(self.seed)
+        self.current_board = [row[:] for row in self.seed]
         self.state = GameState.RUNNING
         self.generations = 0
         self.live_cells = self._count_live_cells(self.current_board)
@@ -223,7 +222,7 @@ class Game:
         if self.state != GameState.RUNNING:
             self.seed = self._create_random_seed()
             self.live_cells = self._count_live_cells(self.seed)
-            self.current_board = deepcopy(self.seed)
+            self.current_board = [row[:] for row in self.seed]
             self.state = GameState.READY
 
     def run_generation(self):
@@ -240,7 +239,7 @@ class Game:
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells
         # in-generation
-        intermediate_state = deepcopy(self.current_board)
+        intermediate_state = [row[:] for row in self.current_board]
         upcoming_live_cells = self._count_live_cells(self.current_board)
 
         for row_index, row in enumerate(self.current_board):
@@ -256,6 +255,6 @@ class Game:
                         upcoming_live_cells += 1
                     intermediate_state[row_index][col_index] = 1
 
-        self.current_board = deepcopy(intermediate_state)
+        self.current_board = [row[:] for row in intermediate_state]
         self.generations += 1
         self.live_cells = upcoming_live_cells

@@ -184,7 +184,7 @@ def test_update_generations_count_after_each_generation():
     assert test_game.generations == 2
 
 
-# Run the test_game for one iteration on four cells
+# Run the test_game for two iterations on four cells
 def test_3_x_3_four_neighbors_two_runs():
     seed = [[0, 1, 0],
             [1, 1, 1],
@@ -414,3 +414,16 @@ def test_calculate_proper_width_and_height_when_seed_provided():
     my_game = Game(seed=seed)
 
     assert my_game.board_size == (3, 4)
+
+
+def test_changing_seed_does_not_change_current_board():
+    seed = [[1, 0, 0],
+            [1, 0, 0],
+            [1, 0, 0],
+            [0, 0, 0]]
+
+    my_game = Game(seed=seed)
+
+    my_game.seed[0][0] = 0
+
+    assert my_game.seed != my_game.current_board
