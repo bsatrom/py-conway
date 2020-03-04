@@ -40,16 +40,20 @@ Once the game board is populated, call the `start()` method. The game values and
 new_game.start()
 ```
 
-You can also instruct the game to self-run with the `start_thread()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
+You can also instruct the game to self-run with the `ThreadedGame` class and `start_thread()` method. The game will start on a background thread and update the full game board as well as a number of informational instance variables:
 
 ```python
-new_game.start_thread()
+from py_conway import ThreadedGame
 
-new_game.current_board # hold the complete game state after each step
-new_game.live_cells # the count of live cells on the board
-new_game.generations # the number of steps elapsed in the current game.
+threaded_game = ThreadedGame(12, 12, random=True)
 
-new_game.stop_thread()
+threaded_game.start_thread()
+
+threaded_game.current_board # hold the complete game state after each step
+threaded_game.live_cells # the count of live cells on the board
+threaded_game.generations # the number of steps elapsed in the current game.
+
+threaded_game.stop_thread()
 ```
 
 It's also possible to call the `run_generation()` method and control the game state yourself from one iteration to the next. Make sure you call the `start()` method first:

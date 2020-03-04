@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(
 
 from py_conway import Game  # nopep8
 
-my_game = Game(12, 12, random=True, enforce_boundary=False)
+my_game = Game(20, 20, random=True, enforce_boundary=False)
 my_game.start()
 
 board, ax = plt.subplots()

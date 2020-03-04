@@ -4,7 +4,6 @@ This module contains the core functionality for running Conway's Game
 of Life games, including the main Game class, GameState Enum, and
 InitError exception object.
 """
-from enum import Enum
 from random import randint
 from .helpers import PseudoEnum
 
