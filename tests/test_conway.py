@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.abspath(
                    os.path.join(os.path.dirname(__file__), '..')))
 
-from py_conway import Game, GameState, InitError  # nopep8
+from py_conway import Game, ThreadedGame, GameState, InitError  # nopep8
 
 
 def create_zeros(x, y):
@@ -184,7 +184,7 @@ def test_update_generations_count_after_each_generation():
     assert test_game.generations == 2
 
 
-# Run the test_game for one iteration on four cells
+# Run the test_game for two iterations on four cells
 def test_3_x_3_four_neighbors_two_runs():
     seed = [[0, 1, 0],
             [1, 1, 1],
@@ -209,12 +209,12 @@ def test_default_game_state_ready():
     assert test_game.state == GameState.READY
 
 
-def test_start_game_changes_state_to_running():
+def test_threaded_start_game_changes_state_to_running():
     seed = [[0, 1, 0],
             [1, 1, 1],
             [0, 1, 0]]
 
-    test_game = Game(3, 3, seed)
+    test_game = ThreadedGame(3, 3, seed)
     test_game.state = GameState.READY
     test_game._thread_active = True
     test_game._run()
@@ -223,8 +223,8 @@ def test_start_game_changes_state_to_running():
     assert test_game.live_cells == 0
 
 
-def test_empty_board_run_game_until_no_living_cells_left():
-    test_game = Game(3, 3)
+def test_threaded_empty_board_run_game_until_no_living_cells_left():
+    test_game = ThreadedGame(3, 3)
     test_game.state = GameState.READY
     test_game._run()
 
@@ -271,13 +271,13 @@ def test_no_seed_ensure_live_cells_count_is_accurate_before_run():
     assert test_game.live_cells == 2
 
 
-def test_still_life_game_will_continue_to_run():
+def test_threaded_game_still_life_game_will_continue_to_run():
     seed = [[0, 0, 0, 0],
             [0, 1, 1, 0],
             [0, 1, 1, 0],
             [0, 0, 0, 0]]
 
-    test_game = Game(4, 4, seed)
+    test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
@@ -289,7 +289,7 @@ def test_still_life_game_can_be_stopped():
             [0, 1, 1, 0],
             [0, 0, 0, 0]]
 
-    test_game = Game(4, 4, seed)
+    test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
@@ -414,3 +414,16 @@ def test_calculate_proper_width_and_height_when_seed_provided():
     my_game = Game(seed=seed)
 
     assert my_game.board_size == (3, 4)
+
+
+def test_changing_seed_does_not_change_current_board():
+    seed = [[1, 0, 0],
+            [1, 0, 0],
+            [1, 0, 0],
+            [0, 0, 0]]
+
+    my_game = Game(seed=seed)
+
+    my_game.seed[0][0] = 0
+
+    assert my_game.seed != my_game.current_board

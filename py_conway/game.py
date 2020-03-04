@@ -4,10 +4,12 @@ This module contains the core functionality for running Conway's Game
 of Life games, including the main Game class, GameState Enum, and
 InitError exception object.
 """
-from copy import deepcopy
 from enum import Enum
-from threading import Thread
 from random import randint
+from .helpers import PseudoEnum
+
+
+GameState = PseudoEnum(["READY", "RUNNING", "FINISHED"])
 
 
 class InitError(Exception):
@@ -21,14 +23,6 @@ class InitError(Exception):
         """
         message = "Game Initialization failed: " + init_message
         super().__init__(message)
-
-
-class GameState(Enum):
-    """Enum for managing state in the Game class."""
-
-    READY = 1
-    RUNNING = 2
-    FINISHED = 3
 
 
 class Game:
@@ -59,7 +53,6 @@ class Game:
                     side.
         """
         self.board_size = (width, height)
-        self._thread_active = False
         self._enforce_boundary = enforce_boundary
 
         if seed is None:
@@ -80,7 +73,7 @@ class Game:
             self.seed = seed
             self.live_cells = self._count_live_cells(self.seed)
 
-        self.current_board = deepcopy(self.seed)
+        self.current_board = [row[:] for row in self.seed]
         self.state = GameState.READY
 
     def _count_live_cells(self, grid_state: list) -> int:
@@ -186,30 +179,9 @@ class Game:
 
         return neighbors
 
-    def _run(self):
-        """Target method for running a game on a thread."""
-        if (self.state == GameState.READY):
-            self.state = GameState.RUNNING
-            while True:
-                if (self.live_cells == 0 or not self._thread_active):
-                    self.state = GameState.FINISHED
-                    break
-                self.run_generation()
-
-    def start_thread(self):
-        """Run the game automatically on a background thread."""
-        thread = Thread(target=self._run, args=())
-        thread.daemon = True
-        thread.start()
-        self._thread_active = True
-
-    def stop_thread(self):
-        """Stop a game currently running on a background thread."""
-        self._thread_active = False
-
     def start(self):
         """Initialize important game properties."""
-        self.current_board = deepcopy(self.seed)
+        self.current_board = [row[:] for row in self.seed]
         self.state = GameState.RUNNING
         self.generations = 0
         self.live_cells = self._count_live_cells(self.current_board)
@@ -223,7 +195,7 @@ class Game:
         if self.state != GameState.RUNNING:
             self.seed = self._create_random_seed()
             self.live_cells = self._count_live_cells(self.seed)
-            self.current_board = deepcopy(self.seed)
+            self.current_board = [row[:] for row in self.seed]
             self.state = GameState.READY
 
     def run_generation(self):
@@ -240,7 +212,7 @@ class Game:
         # Get a deep copy of the state to track cells that will need
         # to change without affecting the outcome for other cells
         # in-generation
-        intermediate_state = deepcopy(self.current_board)
+        intermediate_state = [row[:] for row in self.current_board]
         upcoming_live_cells = self._count_live_cells(self.current_board)
 
         for row_index, row in enumerate(self.current_board):
@@ -256,6 +228,6 @@ class Game:
                         upcoming_live_cells += 1
                     intermediate_state[row_index][col_index] = 1
 
-        self.current_board = deepcopy(intermediate_state)
+        self.current_board = [row[:] for row in intermediate_state]
         self.generations += 1
         self.live_cells = upcoming_live_cells
