@@ -5,7 +5,6 @@ of Life games, including the main Game class, GameState Enum, and
 InitError exception object.
 """
 from enum import Enum
-from threading import Thread
 from random import randint
 
 
@@ -58,7 +57,6 @@ class Game:
                     side.
         """
         self.board_size = (width, height)
-        self._thread_active = False
         self._enforce_boundary = enforce_boundary
 
         if seed is None:
@@ -184,27 +182,6 @@ class Game:
                 neighbors += 1
 
         return neighbors
-
-    def _run(self):
-        """Target method for running a game on a thread."""
-        if (self.state == GameState.READY):
-            self.state = GameState.RUNNING
-            while True:
-                if (self.live_cells == 0 or not self._thread_active):
-                    self.state = GameState.FINISHED
-                    break
-                self.run_generation()
-
-    def start_thread(self):
-        """Run the game automatically on a background thread."""
-        thread = Thread(target=self._run, args=())
-        thread.daemon = True
-        thread.start()
-        self._thread_active = True
-
-    def stop_thread(self):
-        """Stop a game currently running on a background thread."""
-        self._thread_active = False
 
     def start(self):
         """Initialize important game properties."""

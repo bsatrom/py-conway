@@ -6,7 +6,7 @@ import sys
 sys.path.insert(0, os.path.abspath(
                    os.path.join(os.path.dirname(__file__), '..')))
 
-from py_conway import Game, GameState, InitError  # nopep8
+from py_conway import Game, ThreadedGame, GameState, InitError  # nopep8
 
 
 def create_zeros(x, y):
@@ -209,12 +209,12 @@ def test_default_game_state_ready():
     assert test_game.state == GameState.READY
 
 
-def test_start_game_changes_state_to_running():
+def test_threaded_start_game_changes_state_to_running():
     seed = [[0, 1, 0],
             [1, 1, 1],
             [0, 1, 0]]
 
-    test_game = Game(3, 3, seed)
+    test_game = ThreadedGame(3, 3, seed)
     test_game.state = GameState.READY
     test_game._thread_active = True
     test_game._run()
@@ -223,8 +223,8 @@ def test_start_game_changes_state_to_running():
     assert test_game.live_cells == 0
 
 
-def test_empty_board_run_game_until_no_living_cells_left():
-    test_game = Game(3, 3)
+def test_threaded_empty_board_run_game_until_no_living_cells_left():
+    test_game = ThreadedGame(3, 3)
     test_game.state = GameState.READY
     test_game._run()
 
@@ -271,13 +271,13 @@ def test_no_seed_ensure_live_cells_count_is_accurate_before_run():
     assert test_game.live_cells == 2
 
 
-def test_still_life_game_will_continue_to_run():
+def test_threaded_game_still_life_game_will_continue_to_run():
     seed = [[0, 0, 0, 0],
             [0, 1, 1, 0],
             [0, 1, 1, 0],
             [0, 0, 0, 0]]
 
-    test_game = Game(4, 4, seed)
+    test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
@@ -289,7 +289,7 @@ def test_still_life_game_can_be_stopped():
             [0, 1, 1, 0],
             [0, 0, 0, 0]]
 
-    test_game = Game(4, 4, seed)
+    test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
     assert test_game.state, GameState.RUNNING
