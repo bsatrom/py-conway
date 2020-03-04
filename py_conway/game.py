@@ -6,6 +6,10 @@ InitError exception object.
 """
 from enum import Enum
 from random import randint
+from .helpers import PseudoEnum
+
+
+GameState = PseudoEnum(["READY", "RUNNING", "FINISHED"])
 
 
 class InitError(Exception):
@@ -19,14 +23,6 @@ class InitError(Exception):
         """
         message = "Game Initialization failed: " + init_message
         super().__init__(message)
-
-
-class GameState(Enum):
-    """Enum for managing state in the Game class."""
-
-    READY = 1
-    RUNNING = 2
-    FINISHED = 3
 
 
 class Game:

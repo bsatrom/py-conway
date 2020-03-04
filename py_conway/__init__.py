@@ -2,3 +2,4 @@
 
 from .game import *
 from .threaded_game import *
+from .helpers import *
