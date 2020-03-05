@@ -428,3 +428,12 @@ def test_changing_seed_does_not_change_current_board():
     my_game.seed[0][0] = 0
 
     assert my_game.seed != my_game.current_board
+
+
+def test_wide_game():
+    my_game = Game(57, 37, random=True)
+
+    my_game.start()
+    my_game.run_generation()
+
+    assert my_game.generations == 1

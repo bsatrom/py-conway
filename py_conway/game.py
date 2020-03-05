@@ -98,7 +98,7 @@ class Game:
             two-dimensional list of zeros.
         """
         cols, rows = self.board_size
-        return [[0 for row in range(rows)] for col in range(cols)]
+        return [[0 for col in range(cols)] for row in range(rows)]
 
     def _create_random_seed(self) -> list:
         """Initialize the board with random alive (1) and dead (0) cells.
@@ -108,7 +108,7 @@ class Game:
             list with random 0 and 1 values.
         """
         cols, rows = self.board_size
-        return [[randint(0, 1) for row in range(rows)] for col in range(cols)]
+        return [[randint(0, 1) for col in range(cols)] for row in range(rows)]
 
     def _scan_seed(self, seed: list):
         """Scan each cell in a seed to ensure valid data (0, 1).
