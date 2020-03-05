@@ -34,15 +34,15 @@ class Game:
     generations = 0
     live_cells = 0
 
-    def __init__(self, width: int = 0, height: int = 0,
+    def __init__(self, columns: int = 0, rows: int = 0,
                  seed: list = None, random: bool = False,
                  enforce_boundary: bool = True):
         """
         Intialize the game based on provided board size values and a seed.
 
         Args:
-            width (int): the width (in columns) of the game board
-            height (int): the height (in rows) of the game board
+            columns (int): the number of columns in the game board
+            rows (int): the number of rows in the game board
             seed (int): A two-dimensional list with 1 and 0 values that
                     should be set to the initial game state.
             random (bool): Boolean indicating whether a random seed should
@@ -51,12 +51,12 @@ class Game:
                     the edge of the board should wrap around to the other
                     side.
         """
-        self.board_size = (width, height)
+        self.board_size = (columns, rows)
         self._enforce_boundary = enforce_boundary
 
         if seed is None:
-            if width == 0 or height == 0:
-                raise InitError("Please provide width and height values \
+            if columns == 0 or rows == 0:
+                raise InitError("Please provide columns and rows values \
                                  geater than 0.")
             if random:
                 self.seed = self._create_random_seed()
@@ -64,7 +64,7 @@ class Game:
             else:
                 self.seed = self._create_zeros()
         else:
-            if len(seed) != height or len(seed[0]) != width:
+            if len(seed) != rows or len(seed[0]) != columns:
                 self.board_size = (len(seed[0]), len(seed))
 
             self._scan_seed(seed)
@@ -98,7 +98,7 @@ class Game:
             two-dimensional list of zeros.
         """
         cols, rows = self.board_size
-        return [[0 for row in range(rows)] for col in range(cols)]
+        return [[0 for col in range(cols)] for row in range(rows)]
 
     def _create_random_seed(self) -> list:
         """Initialize the board with random alive (1) and dead (0) cells.
@@ -108,7 +108,7 @@ class Game:
             list with random 0 and 1 values.
         """
         cols, rows = self.board_size
-        return [[randint(0, 1) for row in range(rows)] for col in range(cols)]
+        return [[randint(0, 1) for col in range(cols)] for row in range(rows)]
 
     def _scan_seed(self, seed: list):
         """Scan each cell in a seed to ensure valid data (0, 1).

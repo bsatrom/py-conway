@@ -73,7 +73,7 @@ def test_test_game_3_x_3_check_cell_with_three_neighbors():
 # Run on an array of a single column
 def test_single_column_array():
     seed = [[0], [0], [1]]
-    test_game = Game(1, 3, seed)
+    test_game = Game(3, 1, seed)
     assert test_game._num_neighbors(1, 0) == 1
 
 
@@ -136,7 +136,7 @@ def test_4_x_3_three_neighbors_single_run():
                       [1, 0, 0, 1],
                       [0, 1, 1, 0]]
 
-    test_game = Game(4, 3, seed)
+    test_game = Game(3, 4, seed)
     test_game.start()
 
     test_game.run_generation()
@@ -398,12 +398,12 @@ def test_cannot_reseed_when_game_is_active():
 
 def test_empty_width_raises_error_when_no_seed_provided():
     with pytest.raises(InitError):
-        Game(width=0, random=True)
+        Game(columns=0, random=True)
 
 
 def test_empty_height_raises_error_when_no_seed_provided():
     with pytest.raises(InitError):
-        Game(height=0, random=True)
+        Game(rows=0, random=True)
 
 
 def test_calculate_proper_width_and_height_when_seed_provided():
@@ -428,3 +428,12 @@ def test_changing_seed_does_not_change_current_board():
     my_game.seed[0][0] = 0
 
     assert my_game.seed != my_game.current_board
+
+
+def test_game_with_differing_dimensions_and_random_seed():
+    my_game = Game(57, 37, random=True)
+
+    my_game.start()
+    my_game.run_generation()
+
+    assert my_game.generations == 1
