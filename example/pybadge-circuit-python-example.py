@@ -1,6 +1,6 @@
 """Example code for running Py-Conway in CircuitPython.
 
-This example is specific to the Adafruit PyPadge 
+This example is specific to the Adafruit PyPadge
 (https://www.adafruit.com/product/4200) and will need to be adapted
 for any other device.
 """
@@ -19,9 +19,9 @@ num_pixels = 5
 
 """Game Variables"""
 # Large board
-#pixel_size = 16
-#board_width = 9
-#board_height = 7
+# pixel_size = 16
+# board_width = 9
+# board_height = 7
 
 # Small board option
 pixel_size = 8
@@ -60,6 +60,8 @@ splash = displayio.Group()
 board_group = displayio.Group()
 
 """Game Functions"""
+
+
 def perform_startup():
     # Make the display context
     display.show(splash)
@@ -101,26 +103,28 @@ def perform_startup():
     text_group.append(text_area)  # Subgroup for text scaling
     splash.append(text_group)
 
+
 def game_over(num_generations):
     game_over_group = displayio.Group()
-    
+
     over_text_group = displayio.Group(max_size=10, scale=2, x=25, y=40)
     over_text = "Game Over!"
     text_area = label.Label(terminalio.FONT, text=over_text, color=0xFF00FF)
     over_text_group.append(text_area)
     game_over_group.append(over_text_group)
-    
+
     generations_group = displayio.Group(max_size=10, scale=1, x=40, y=70)
     gen_text = "Generations: " + str(num_generations)
     gen_text_area = label.Label(terminalio.FONT, text=gen_text, color=0xFF00FF)
     generations_group.append(gen_text_area)
-    
+
     game_over_group.append(generations_group)
-    
+
     pixels.fill(RED)
     pixels.show()
-    
+
     display.show(game_over_group)
+
 
 def update_board():
     board_state = cpy_game.current_board
@@ -130,13 +134,15 @@ def update_board():
                                   else DEFAULT_PIXEL
             game_board[row, col] = cell_val
 
+
 """Game Logic"""
 perform_startup()
 
 # Load game sprites. Use the _16pixel file if drawing a larger board
-sprite_sheet, palette = adafruit_imageload.load("/cp_sprite_sheet_black_8pixel.bmp",
-                                                bitmap=displayio.Bitmap,
-                                                palette=displayio.Palette)
+sprite_sheet, palette = adafruit_imageload.load(
+                                        "/cp_sprite_sheet_black_8pixel.bmp",
+                                        bitmap=displayio.Bitmap,
+                                        palette=displayio.Palette)
 
 game_board = displayio.TileGrid(sprite_sheet,
                                 pixel_shader=palette,
@@ -156,15 +162,15 @@ while True:
         if pybadger.button.start:
             pixels.fill(0x000000)
             pixels.show()
-            
+
             display.show(board_group)
-            
+
             is_game_running = True
             is_game_over = False
-            
+
             cpy_game.reseed()
             cpy_game.start()
-            
+
             update_board()
     elif not is_game_over:
         # Add logic here to cancel or stop game
@@ -174,11 +180,11 @@ while True:
             game_over(cpy_game.generations)
             is_game_over = True
             continue
-            
+
         # Run the next generation
         if cpy_game.live_cells > 0:
             cpy_game.run_generation()
-            
+
             update_board()
             # sleep(.25)  # Remove to run the game loop faster
         else:
