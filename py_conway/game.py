@@ -185,6 +185,12 @@ class Game:
         self.generations = 0
         self.live_cells = self._count_live_cells(self.current_board)
 
+    def stop(self):
+        """Stop a running game."""
+        if self.state == GameState.RUNNING:
+            self.state = GameState.FINISHED
+            self.live_cells = self._count_live_cells(self.current_board)
+
     def reseed(self):
         """Reseed the game board.
 

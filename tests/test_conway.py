@@ -1,5 +1,6 @@
 import pytest
 from copy import deepcopy
+import time
 
 import os
 import sys
@@ -281,7 +282,7 @@ def test_threaded_game_still_life_game_will_continue_to_run():
     test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
-    assert test_game.state, GameState.RUNNING
+    assert test_game.state == GameState.RUNNING
 
 
 def test_still_life_game_can_be_stopped():
@@ -293,11 +294,13 @@ def test_still_life_game_can_be_stopped():
     test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
-    assert test_game.state, GameState.RUNNING
+    assert test_game.state == GameState.RUNNING
 
     test_game.stop_thread()
 
-    assert test_game.state, GameState.FINISHED
+    time.sleep(.01)
+
+    assert test_game.state == GameState.FINISHED
 
 
 def test_ensure_that_seed_includes_valid_data():
@@ -437,3 +440,14 @@ def test_game_with_differing_dimensions_and_random_seed():
     my_game.run_generation()
 
     assert my_game.generations == 1
+
+
+def test_game_can_be_stopped_while_running():
+    my_game = Game(100, 100, random=True)
+
+    my_game.start()
+    my_game.run_generation()
+
+    my_game.stop()
+
+    assert my_game.state == GameState.FINISHED

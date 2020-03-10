@@ -38,7 +38,7 @@ class ThreadedGame(Game):
 
     def _run(self):
         """Target method for running a game on a thread."""
-        if (self.state == GameState.READY):
+        if self.state == GameState.READY:
             self.state = GameState.RUNNING
             while True:
                 if (self.live_cells == 0 or not self._thread_active):
@@ -50,8 +50,8 @@ class ThreadedGame(Game):
         """Run the game automatically on a background thread."""
         thread = Thread(target=self._run, args=())
         thread.daemon = True
-        thread.start()
         self._thread_active = True
+        thread.start()
 
     def stop_thread(self):
         """Stop a game currently running on a background thread."""
