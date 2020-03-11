@@ -1,14 +1,14 @@
 [![Build Status](https://dev.azure.com/brandon0360/py-conway/_apis/build/status/bsatrom.py-conway?branchName=master)](https://dev.azure.com/brandon0360/py-conway/_build/latest?definitionId=3&branchName=master)
 [![codecov](https://codecov.io/gh/bsatrom/py-conway/branch/master/graph/badge.svg)](https://codecov.io/gh/bsatrom/py-conway)
 ![Pyton Version Support](https://img.shields.io/pypi/pyversions/py-conway)
+![PyPi Version](https://img.shields.io/pypi/v/py-conway)
+![Wheel Support](https://img.shields.io/pypi/wheel/py-conway)
 
 # py-conway
 
 TDD-style implementation of [Conway's Game of Life](https://www.conwaylife.com/wiki/Conway%27s_Game_of_Life) in Python. Built with zero dependencies in order to be portable to Web, CLI and embedded applications (like MicroPython and CircuitPython).
 
 ![](/assets/CPYConway-PyBadge.gif)
-
-[View Project on PyPi](https://pypi.org/project/py-conway/)
 
 ## Installation
 
