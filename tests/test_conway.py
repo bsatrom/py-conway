@@ -282,7 +282,8 @@ def test_threaded_game_still_life_game_will_continue_to_run():
     test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
-    assert test_game.state == GameState.RUNNING
+    assert test_game.state == GameState.STASIS
+    assert test_game.generations > 1
 
 
 def test_still_life_game_can_be_stopped():
@@ -294,11 +295,11 @@ def test_still_life_game_can_be_stopped():
     test_game = ThreadedGame(4, 4, seed)
     test_game.start_thread()
 
-    assert test_game.state == GameState.RUNNING
+    assert test_game.state == GameState.STASIS
 
     test_game.stop_thread()
 
-    time.sleep(.01)
+    time.sleep(.10)
 
     assert test_game.state == GameState.FINISHED
 
@@ -451,3 +452,35 @@ def test_game_can_be_stopped_while_running():
     my_game.stop()
 
     assert my_game.state == GameState.FINISHED
+
+
+def test_game_still_life_changes_status_to_stasis():
+    seed = [[0, 0, 0, 0],
+            [0, 1, 1, 0],
+            [0, 1, 1, 0],
+            [0, 0, 0, 0]]
+
+    my_game = Game(seed=seed)
+
+    my_game.start()
+    my_game.run_generation()
+
+    assert my_game.state == GameState.STASIS
+
+
+def test_game_oscillator_changes_status_to_stasis():
+    seed = [[0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 1, 0],
+            [0, 0, 0, 0]]
+
+    my_game = Game(seed=seed)
+
+    my_game.start()
+    my_game.run_generation()
+
+    assert my_game.state == GameState.RUNNING
+
+    my_game.run_generation()
+
+    assert my_game.state == GameState.STASIS
