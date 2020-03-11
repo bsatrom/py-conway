@@ -1,5 +1,5 @@
 test:
-	pycodestyle --show-source --show-pep8 tests/ example/ py_conway/
+	pycodestyle --show-source --show-pep8 tests/ examples/ py_conway/
 	pydocstyle py_conway/
 	pytest tests --cov=py_conway
 
