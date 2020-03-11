@@ -7,8 +7,22 @@ InitError exception object.
 from random import randint
 from .helpers import PseudoEnum
 
+"""Enum for managing the state of a game.
 
-GameState = PseudoEnum(["READY", "RUNNING", "FINISHED"])
+Uses a custom PseudoEnum class because Enum support is not available
+on CircuitPython/MicroPython.
+
+States:
+    READY: The game is initialized and ready to start.
+    RUNNING: The game is currently running.
+    STASIS: The game has reached a point where the board is empty, or the
+            only remaining cells are either still-life or oscillator objects.
+            A game in stasis can still be run, but this state is indicated
+            as a flag so the game consumer can catch stasis conditions
+            and automatically restart or stop the game.
+    FINISHED: The game has stopped and is ready for a new game to begin.
+"""
+GameState = PseudoEnum(["READY", "RUNNING", "STASIS", "FINISHED"])
 
 
 class InitError(Exception):
@@ -53,6 +67,7 @@ class Game:
         """
         self.board_size = (columns, rows)
         self._enforce_boundary = enforce_boundary
+        self._previous_board = None
 
         if seed is None:
             if columns == 0 or rows == 0:
@@ -211,7 +226,7 @@ class Game:
         Once every cell has been checked against Conway's three rules,
         the entire state grid is updated at once.
         """
-        if (self.state != GameState.RUNNING):
+        if self.state != GameState.RUNNING and self.state != GameState.STASIS:
             return
 
         # Get a deep copy of the state to track cells that will need
@@ -233,6 +248,19 @@ class Game:
                         upcoming_live_cells += 1
                     intermediate_state[row_index][col_index] = 1
 
-        self.current_board = [row[:] for row in intermediate_state]
         self.generations += 1
         self.live_cells = upcoming_live_cells
+
+        # When a board only contains still-live cells, there will
+        # be no change in state
+        if self.current_board == intermediate_state:
+            self.state = GameState.STASIS
+        # Alternatively, when the state is the same every other generation
+        # we have an oscillator on our hands and should also change
+        # the state to STASIS
+        elif self._previous_board == intermediate_state:
+            self.state = GameState.STASIS
+        # Otherwise, the game is still running normally
+        else:
+            self._previous_board = self.current_board
+            self.current_board = [row[:] for row in intermediate_state]
