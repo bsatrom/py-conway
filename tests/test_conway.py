@@ -299,7 +299,7 @@ def test_still_life_game_can_be_stopped():
 
     test_game.stop_thread()
 
-    time.sleep(.01)
+    time.sleep(.10)
 
     assert test_game.state == GameState.FINISHED
 
